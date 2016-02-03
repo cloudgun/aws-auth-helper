@@ -8,10 +8,10 @@ build:
 	python setup.py sdist bdist_wheel
 
 release-test: clean rst-readme build
-	twine upload -r pypitest dist/route53-registry-*
+	twine upload -r pypitest dist/aws-auth-helper-*
 
 release: clean rst-readme build
-	twine upload -r pypi dist/route53-registry-*
+	twine upload -r pypi dist/aws-auth-helper-*
 
 test: clean rst-readme
 	tox
