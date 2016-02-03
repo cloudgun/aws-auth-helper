@@ -1,0 +1,23 @@
+install: clean rst-readme
+	pip install -e .
+
+rst-readme:
+	pandoc README.md -f markdown -t rst -s -o README.rst
+
+build:
+	python setup.py sdist bdist_wheel
+
+release-test: clean rst-readme build
+	twine upload -r pypitest dist/route53-registry-*
+
+release: clean rst-readme build
+	twine upload -r pypi dist/route53-registry-*
+
+test: clean rst-readme
+	tox
+
+test-server: clean rst-readme
+	devpi test route-registry
+
+clean:
+	rm -rf dist build *.egg-info MANIFEST README.rst .tox .eggs
