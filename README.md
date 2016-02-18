@@ -113,7 +113,8 @@ constructor. Following from the previous example:
 
 
 ## Contributing
-If someone were to modify this utility, is there anything important about it that they should know?
+Please create a feature/branch, and create test cases for any edits you make. When doing pull requests, please create the request onto the development branch.
+
 ### Virtual Python Environment
 When doing development and testing, it's good practice to use a virtualenv. A virtualenv is a sandboxed python environment which does not modify the system python installation
 You'll need the following utilities:
@@ -141,7 +142,7 @@ Please read instructions at [https://github.com/yyuu/pyenv-virtualenv#installati
 
 #### Configuring environment
 
-Now that you have a working virtualenv, you can install the utility in development mode. Keep in mind that the 'activate' step, is valid only for a single session. If you close the terminal you'll have to run `pyenv activate $MY_ENV_NAME` again. You can now run pip, python, and my-utility while only referring to the local python environment created in $WORKSPACE/my-utility. You can see this by running:
+Now that you have a working virtualenv, you can install the utility in development mode. Keep in mind that the 'activate' step, is valid only for a single session. If you close the terminal you'll have to run `pyenv activate aws-auth-helper` again. You can now run pip, python, and aws-auth-helper while only referring to the local python environment created in $WORKSPACE/aws-auth-helper. You can see this by running:
 
     (my-utility)$ which pip
     ~/.pyenv/versions/aws-auth-helper/bin/pip
