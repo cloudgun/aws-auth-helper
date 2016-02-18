@@ -310,8 +310,7 @@ class Credentials(object):
 
 def validate_creds(aws_access_key_id, aws_secret_access_key, aws_session_token, profile, **kwargs):
     # 1 - Check if we have temporal keys
-    if aws_session_token is not None:
-        if (aws_secret_access_key is None) or (aws_access_key_id is None):
+    if (aws_session_token is not None) and (aws_secret_access_key is None) or (aws_access_key_id is None):
             raise argparse.ArgumentError(
                 argument=None,
                 message="'--aws-session-token' requires '--aws-secret-access-key' and '--aws-access-key-id'"
