@@ -153,8 +153,6 @@ When testing this utility, you can install it and still edit the source files as
 
 #### Installation
 
-    $ cd $WORKSPACE/my-utility
-    $ pip install --editable .
-    $ which aws-auth-helper
-    ~/.pyenv/versions/aws-auth-helper/lib/python2.7/site-packages/my-utility-1.3.2/bin/my-utility
-    
+    $ cd $WORKSPACE/aws-auth-helper
+    $ make install
+
