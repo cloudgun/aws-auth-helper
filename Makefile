@@ -1,22 +1,19 @@
-install: clean rst-readme
+install: clean
 	pip install -e .
-
-rst-readme:
-	pandoc README.md -f markdown -t rst -s -o README.rst
 
 build:
 	python setup.py sdist bdist_wheel
 
-release-test: clean rst-readme build
+release-test: clean build
 	twine upload -r pypitest dist/aws-auth-helper-*
 
-release: clean rst-readme build
+release: clean build
 	twine upload -r pypi dist/aws-auth-helper-*
 
-test: clean rst-readme
+test: clean
 	tox
 
-test-server: clean rst-readme
+test-server: clean
 	devpi test route-registry
 
 clean:
