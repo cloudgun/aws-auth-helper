@@ -152,6 +152,11 @@ Now that you have a working virtualenv, you can install the utility in developme
 ### Development Mode
 When testing this utility, you can install it and still edit the source files as follows:
 
+#### Dependencies
+Pypi requires its readme to be in reStructured format. Our Makefile will generate this rst file, but you'll need to install pandoc.
+
+    $ brew install pandoc
+
 #### Installation
 
     $ cd $WORKSPACE/aws-auth-helper
