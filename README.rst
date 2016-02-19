@@ -4,6 +4,9 @@ aws-auth-helper
 Helper library providing ArgumentParser and Credentials class for AWS
 authentication
 
+.. image:: https://www.quantifiedcode.com/api/v1/project/ea5b743486474c47b50734f846586474/badge.svg
+  :target: https://www.quantifiedcode.com/app/project/ea5b743486474c47b50734f846586474
+  :alt: Code issues
 Setup
 -----
 
