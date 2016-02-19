@@ -5,6 +5,7 @@ from boto3 import Session
 
 __author__ = 'drews'
 
+
 class AWSArgumentParser(argparse.ArgumentParser):
     """
     >>> import argparse
@@ -63,24 +64,30 @@ class AWSArgumentParser(argparse.ArgumentParser):
                             If you have assigned a role, set a RoleSessionName
       --max-instances MAX_INSTANCES
     """
-    def __init__(self, default_role_session_name, **kwargs):
 
+    def __init__(self, default_role_session_name, **kwargs):
         super(AWSArgumentParser, self).__init__(add_help=False, **kwargs)
 
         aws_group = self.add_argument_group('AWS credentials')
 
-        aws_group.add_argument('--aws-access-key-id', action=EnvDefault, envvar='AWS_ACCESS_KEY_ID', help='AWS access key', required=False)
+        aws_group.add_argument('--aws-access-key-id', action=EnvDefault, envvar='AWS_ACCESS_KEY_ID',
+                               help='AWS access key', required=False)
         aws_group.add_argument('--aws-secret-access-key', action=EnvDefault, envvar='AWS_SECRET_ACCESS_KEY',
-                               help='Access and secret key variables override credentials stored in credential and config files', required=False)
+                               help='Access and secret key variables override credentials stored in credential and config files',
+                               required=False)
         aws_group.add_argument('--aws-session-token', action=EnvDefault, envvar='AWS_SESSION_TOKEN',
-                               help='A session token is only required if you are using temporary security credentials.', required=False)
+                               help='A session token is only required if you are using temporary security credentials.',
+                               required=False)
         aws_group.add_argument('--region', action=EnvDefault, envvar='AWS_DEFAULT_REGION',
-                               help='This variable overrides the default region of the in-use profile, if set.', required=False)
+                               help='This variable overrides the default region of the in-use profile, if set.',
+                               required=False)
         aws_group.add_argument('--profile', action=EnvDefault, envvar='AWS_DEFAULT_PROFILE',
                                help='This can be the name of a profile stored in a credential or config file, or default to use the default profile.',
                                default=None, required=False)
         aws_group.add_argument('--role', help='Fully qualified role arn to assume')
-        aws_group.add_argument('--auth-debug', help='Enter debug mode, which will print credentials and then exist at `create_session`.', action='store_true', default=False)
+        aws_group.add_argument('--auth-debug',
+                               help='Enter debug mode, which will print credentials and then exist at `create_session`.',
+                               action='store_true', default=False)
 
         # We can optionally have a default role session name.
         role_options = {
@@ -91,19 +98,23 @@ class AWSArgumentParser(argparse.ArgumentParser):
 
         aws_group.add_argument('--role-session-name', **role_options)
 
+
 DEBUG_ENV = False
 if DEBUG_ENV:
     logging.basicConfig(level=logging.DEBUG)
+
+
 class EnvDefault(argparse.Action):
     """
     Allow argparse values to be pulled from environment variables
     """
+
     def __init__(self, envvar, required=True, default=None, **kwargs):
         if not default and envvar:
             if envvar in os.environ:
                 logging.debug('EnvDefault:__init__(): os.environ["{envvar}"]={value}'.format(
-                    value=os.environ[envvar],
-                    envvar=envvar
+                        value=os.environ[envvar],
+                        envvar=envvar
                 ))
                 default = os.environ[envvar]
             else:
@@ -178,6 +189,10 @@ class Credentials(object):
             Credentials.default = self
 
     def assume_role(self):
+        """
+        Check if we have a role, and assume it if we do. Otherwise, raise exception.
+        :return:
+        """
         if self.using_role():
             self.logger.debug('assume_role(): self.using_role()=True')
             self._assume_role()
@@ -206,7 +221,11 @@ class Credentials(object):
         self.logger.debug('reset(): after self={value}'.format(value=vars(self._freeze)))
 
     def create_session(self, internal=False):
-
+        """
+        Return a function to generate our session with local vars as a closure.
+        :param bool internal: Wether or not this method was called from internal or external to the class
+        :return callable(region):
+        """
         session_credentials = {}
         self.logger.debug('create_session(): session_credentials={value}'.format(value=session_credentials))
         # Get the credentials which can assume the role
@@ -228,10 +247,12 @@ class Credentials(object):
         self.logger.debug('create_session(): default_region={value}'.format(value=self.region))
 
         exit_at_session = self.auth_debug & (not internal)
+
         def build_session(region=default_region):
             session_credentials['region_name'] = region
             self.logger.debug('build_session(): region={value}'.format(value=self.region))
 
+            # When debugging, end our auth process when our session is created.
             if exit_at_session:
                 exit(1)
 
@@ -250,8 +271,8 @@ class Credentials(object):
         # Assume the role
         session = self.create_session(internal=True)
         credentials = session().client('sts').assume_role(
-            RoleArn=self.role,
-            RoleSessionName=self.role_session_name
+                RoleArn=self.role,
+                RoleSessionName=self.role_session_name
         )
         self.logger.debug('_assume_role(): credentials={value}'.format(value=credentials))
 
@@ -260,13 +281,18 @@ class Credentials(object):
         self._orig_aws_session_token = self.aws_session_token
 
         self.aws_access_key_id = credentials['Credentials']['AccessKeyId']
-        self.logger.debug('_assume_role(): self.aws_access_key_id={value}'.format(value=credentials['Credentials']['AccessKeyId']))
+        self.logger.debug(
+                '_assume_role(): self.aws_access_key_id={value}'.format(
+                        value=credentials['Credentials']['AccessKeyId']))
 
         self.aws_secret_access_key = credentials['Credentials']['SecretAccessKey']
-        self.logger.debug('_assume_role(): self.aws_secret_access_key={value}'.format(value=credentials['Credentials']['SecretAccessKey']))
+        self.logger.debug('_assume_role(): self.aws_secret_access_key={value}'.format(
+                value=credentials['Credentials']['SecretAccessKey']))
 
         self.aws_session_token = credentials['Credentials']['SessionToken']
-        self.logger.debug('_assume_role(): self.aws_session_token={value}'.format(value=credentials['Credentials']['SessionToken']))
+        self.logger.debug(
+                '_assume_role(): self.aws_session_token={value}'.format(
+                        value=credentials['Credentials']['SessionToken']))
 
     def has_keys(self):
         """
@@ -308,24 +334,34 @@ class Credentials(object):
             (self.has_keys() or self.has_profile())
         )
 
+
 def validate_creds(aws_access_key_id, aws_secret_access_key, aws_session_token, profile, **kwargs):
+    """
+    Perform validation on CLI options
+    :param str aws_access_key_id:
+    :param str aws_secret_access_key:
+    :param str aws_session_token:
+    :param str profile:
+    :param kwargs:
+    :return:
+    """
     # 1 - Check if we have temporal keys
     if (aws_session_token is not None) and (aws_secret_access_key is None) or (aws_access_key_id is None):
-            raise argparse.ArgumentError(
+        raise argparse.ArgumentError(
                 argument=None,
                 message="'--aws-session-token' requires '--aws-secret-access-key' and '--aws-access-key-id'"
-            )
+        )
 
     # 2 - Check if we have a profile
     if profile and (aws_access_key_id or aws_secret_access_key):
         raise argparse.ArgumentError(
-            argument=None,
-            message="You can not set both '--profile' and '--aws-secret-access-key'/'--aws-access-key-id'"
+                argument=None,
+                message="You can not set both '--profile' and '--aws-secret-access-key'/'--aws-access-key-id'"
         )
 
     # 3 - Check if we have keys
     if bool(aws_secret_access_key) != bool(aws_access_key_id):
         raise argparse.ArgumentError(
-            argument=None,
-            message="'Both '--aws-secret-access-key' and '--aws-access-key-id' must be provided."
+                argument=None,
+                message="'Both '--aws-secret-access-key' and '--aws-access-key-id' must be provided."
         )
