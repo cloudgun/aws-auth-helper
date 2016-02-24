@@ -25,7 +25,7 @@ class AWSArgumentParser(argparse.ArgumentParser):
       --message MESSAGE
 
     # Add the aws defaults
-    >>> aws_options = awsauthhelper.AWSArgumentParser(default_role_session_name='elasticsearch_creation')
+    >>> aws_options = awsauthhelper.AWSArgumentParser(role_session_name='elasticsearch_creation')
 
     >>> my_aws_app = argparse.ArgumentParser(
     >>>     description='Lists EC2 instances',
