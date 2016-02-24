@@ -65,7 +65,7 @@ class AWSArgumentParser(argparse.ArgumentParser):
       --max-instances MAX_INSTANCES
     """
 
-    def __init__(self, default_role_session_name, **kwargs):
+    def __init__(self, default_role_session_name, default_region=None, default_profile=None, **kwargs):
         super(AWSArgumentParser, self).__init__(add_help=False, **kwargs)
 
         aws_group = self.add_argument_group('AWS credentials')
@@ -80,10 +80,10 @@ class AWSArgumentParser(argparse.ArgumentParser):
                                required=False)
         aws_group.add_argument('--region', action=EnvDefault, envvar='AWS_DEFAULT_REGION',
                                help='This variable overrides the default region of the in-use profile, if set.',
-                               required=False)
+                               default=default_region, required=False)
         aws_group.add_argument('--profile', action=EnvDefault, envvar='AWS_DEFAULT_PROFILE',
                                help='This can be the name of a profile stored in a credential or config file, or default to use the default profile.',
-                               default=None, required=False)
+                               default=default_profile, required=False)
         aws_group.add_argument('--role', help='Fully qualified role arn to assume')
         aws_group.add_argument('--auth-debug',
                                help='Enter debug mode, which will print credentials and then exist at `create_session`.',
