@@ -17,4 +17,4 @@ test-server: clean
 	devpi test route-registry
 
 clean:
-	rm -rf dist build *.egg-info MANIFEST README.rst .tox .eggs
+	rm -rf dist build *.egg-info MANIFEST .tox .eggs
