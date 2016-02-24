@@ -59,7 +59,7 @@ awsauthhelper's ArgumentParser, rather than the reverse. For example,
     ... )
     >>> my_aws_app.add_argument('--max-instances', type=int, required=True)
 
-    >>> aws_options = awsauthhelper.AWSArgumentParser(default_role_session_name='my_app', parents=[my_aws_app])
+    >>> aws_options = awsauthhelper.AWSArgumentParser(role_session_name='my_app', region='eu-central-1', parents=[my_aws_app])
     >>> aws_options.print_help()
 
     usage:  [-h] --max-instances MAX_INSTANCES
