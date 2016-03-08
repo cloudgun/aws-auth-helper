@@ -66,6 +66,7 @@ class AWSArgumentParser(argparse.ArgumentParser):
     """
 
     def __init__(self, role_session_name, region=None, profile=None, enforce_auth_type=None, **kwargs):
+
         super(AWSArgumentParser, self).__init__(add_help=False, **kwargs)
 
         if 'default_role_session_name' in kwargs:
@@ -98,7 +99,8 @@ class AWSArgumentParser(argparse.ArgumentParser):
         aws_group.add_argument('--config-path', action=EnvDefault, envvar='AWS_CONFIG_FILE',
                                help='Specify a custom location for ~/.aws/config', default=auth_must_use_config_file)
         aws_group.add_argument('--credentials-path', action=EnvDefault, envvar='AWS_SHARED_CREDENTIALS_FILE',
-                               help='Specify a custom location for ~/.aws/credentials', default=auth_must_use_credentials_file)
+                               help='Specify a custom location for ~/.aws/credentials',
+                               default=auth_must_use_credentials_file)
         aws_group.add_argument('--auth-debug',
                                help='Enter debug mode, which will print credentials and then exist at `create_session`.',
                                action='store_true', default=False)
@@ -243,6 +245,8 @@ class Credentials(object):
             self._freeze[property] = getattr(self, property, None)
         self.logger.debug('freeze(): self._freeze={value}'.format(value=self._freeze))
 
+        return self
+
     def reset(self):
         """
         Reset Credentials object back to original state, pre any role assumptions.
@@ -252,6 +256,8 @@ class Credentials(object):
         for property in self.freeze_properties:
             setattr(self, property, self._freeze[property])
         self.logger.debug('reset(): after self={value}'.format(value=vars(self._freeze)))
+
+        return self
 
     def create_session(self, internal=False):
         """
@@ -327,6 +333,8 @@ class Credentials(object):
                 '_assume_role(): self.aws_session_token={value}'.format(
                         value=credentials['Credentials']['SessionToken']))
 
+        return self
+
     def has_keys(self):
         """
         Do we have key credentials?
@@ -398,3 +406,5 @@ def validate_creds(aws_access_key_id, aws_secret_access_key, aws_session_token, 
                 argument=None,
                 message="'Both '--aws-secret-access-key' and '--aws-access-key-id' must be provided."
         )
+
+    return True
