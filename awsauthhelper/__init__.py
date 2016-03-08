@@ -65,7 +65,7 @@ class AWSArgumentParser(argparse.ArgumentParser):
       --max-instances MAX_INSTANCES
     """
 
-    def __init__(self, role_session_name, region=None, profile=None, **kwargs):
+    def __init__(self, role_session_name, region=None, profile=None, enforce_auth_type=None, **kwargs):
         super(AWSArgumentParser, self).__init__(add_help=False, **kwargs)
 
         if 'default_role_session_name' in kwargs:
@@ -73,25 +73,32 @@ class AWSArgumentParser(argparse.ArgumentParser):
 
         aws_group = self.add_argument_group('AWS credentials')
 
+        auth_must_use_keys = (enforce_auth_type == 'keys')
+        auth_must_use_keys_with_session = (enforce_auth_type == 'keys_with_session')
+        auth_must_use_profile = (enforce_auth_type == 'profile')
+        auth_must_use_profile_role = (enforce_auth_type == 'profile_role')
+        auth_must_use_config_file = (enforce_auth_type == 'config')
+        auth_must_use_credentials_file = (enforce_auth_type == 'credentials')
+
         aws_group.add_argument('--aws-access-key-id', action=EnvDefault, envvar='AWS_ACCESS_KEY_ID',
-                               help='AWS access key', required=False)
+                               help='AWS access key', required=(auth_must_use_keys or auth_must_use_keys_with_session))
         aws_group.add_argument('--aws-secret-access-key', action=EnvDefault, envvar='AWS_SECRET_ACCESS_KEY',
                                help='Access and secret key variables override credentials stored in credential and config files',
-                               required=False)
+                               required=(auth_must_use_keys or auth_must_use_keys_with_session))
         aws_group.add_argument('--aws-session-token', action=EnvDefault, envvar='AWS_SESSION_TOKEN',
                                help='A session token is only required if you are using temporary security credentials.',
-                               required=False)
+                               required=auth_must_use_keys_with_session)
         aws_group.add_argument('--region', action=EnvDefault, envvar='AWS_DEFAULT_REGION',
                                help='This variable overrides the default region of the in-use profile, if set.',
                                default=region, required=False)
         aws_group.add_argument('--profile', action=EnvDefault, envvar='AWS_DEFAULT_PROFILE',
                                help='This can be the name of a profile stored in a credential or config file, or default to use the default profile.',
-                               default=profile, required=False)
-        aws_group.add_argument('--role', help='Fully qualified role arn to assume')
+                               default=profile, required=(auth_must_use_profile or auth_must_use_profile_role))
+        aws_group.add_argument('--role', help='Fully qualified role arn to assume', required=auth_must_use_profile_role)
         aws_group.add_argument('--config-path', action=EnvDefault, envvar='AWS_CONFIG_FILE',
-                               help='Specify a custom location for ~/.aws/config', default=None)
+                               help='Specify a custom location for ~/.aws/config', default=auth_must_use_config_file)
         aws_group.add_argument('--credentials-path', action=EnvDefault, envvar='AWS_SHARED_CREDENTIALS_FILE',
-                               help='Specify a custom location for ~/.aws/credentials', default=None)
+                               help='Specify a custom location for ~/.aws/credentials', default=auth_must_use_credentials_file)
         aws_group.add_argument('--auth-debug',
                                help='Enter debug mode, which will print credentials and then exist at `create_session`.',
                                action='store_true', default=False)
