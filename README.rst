@@ -27,10 +27,14 @@ Installation
 Usage
 -----
 
-This library provides two main classes:
+This library provides two classes:
 
 -  ``awsauthhelper.ArgumentParser``
 -  ``awsauthhelper.Credentials``
+
+and a function:
+
+- ``awsauthhelper.password.generate``
 
 awsauthhelper.ArgumentParser
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -66,7 +70,8 @@ awsauthhelper's ArgumentParser, rather than the reverse. For example,
         [--aws-access-key-id AWS_ACCESS_KEY_ID]
         [--aws-secret-access-key AWS_SECRET_ACCESS_KEY]
         [--aws-session-token AWS_SESSION_TOKEN] [--region REGION]
-        [--profile PROFILE] [--role ROLE] [--auth-debug]
+        [--profile PROFILE] [--role ROLE] [--config-path CONFIG_PATH]
+        [--credentials-path CREDENTIALS_PATH] [--auth-debug]
         [--role-session-name ROLE_SESSION_NAME]
 
     optional arguments:
@@ -88,6 +93,10 @@ awsauthhelper's ArgumentParser, rather than the reverse. For example,
                             credential or config file, or default to use the
                             default profile.
       --role ROLE           Fully qualified role arn to assume
+      --config-path CONFIG_PATH
+                            Specify a custom location for ~/.aws/config
+      --credentials-path CREDENTIALS_PATH
+                            Specify a custom location for ~/.aws/credentials
       --auth-debug          Enter debug mode, which will print credentials and
                             then exist at `create_session`.
       --role-session-name ROLE_SESSION_NAME
@@ -102,19 +111,23 @@ If your environment variables are set, they will be used as defaults for
 ``awsauthhelper.ArgumentParser(...)``. The class maps to and is aware of
 the following environment variables:
 
-+-----------------------------+-------------------------------+
-| Environment Variable        | cli option                    |
-+=============================+===============================+
-| ``AWS_ACCESS_KEY_ID``       | ``--aws-access-key-id``       |
-+-----------------------------+-------------------------------+
-| ``AWS_SECRET_ACCESS_KEY``   | ``--aws-secret-access-key``   |
-+-----------------------------+-------------------------------+
-| ``AWS_SESSION_TOKEN``       | ``--aws-session-token``       |
-+-----------------------------+-------------------------------+
-| ``AWS_DEFAULT_REGION``      | ``--region``                  |
-+-----------------------------+-------------------------------+
-| ``AWS_DEFAULT_PROFILE``     | ``--profile``                 |
-+-----------------------------+-------------------------------+
++-----------------------------------+-------------------------------+
+| Environment Variable              | cli option                    |
++===================================+===============================+
+| ``AWS_ACCESS_KEY_ID``             | ``--aws-access-key-id``       |
++-----------------------------------+-------------------------------+
+| ``AWS_SECRET_ACCESS_KEY``         | ``--aws-secret-access-key``   |
++-----------------------------------+-------------------------------+
+| ``AWS_SESSION_TOKEN``             | ``--aws-session-token``       |
++-----------------------------------+-------------------------------+
+| ``AWS_DEFAULT_REGION``            | ``--region``                  |
++-----------------------------------+-------------------------------+
+| ``AWS_DEFAULT_PROFILE``           | ``--profile``                 |
++-----------------------------------+-------------------------------+
+| ``AWS_CONFIG_FILE``               | ``--config-path``             |
++-----------------------------------+-------------------------------+
+| ``AWS_SHARED_CREDENTIALS_FILE``   | ``--credentials-path``        |
++-----------------------------------+-------------------------------+
 
 awsauthhelper.Credentials
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -152,6 +165,24 @@ constructor. Following from the previous example:
     >>>    print(
     ...       boto3_session(region=region['RegionName']).client('ec2').describe_instances()
     ...    )
+
+awsauthhelper.password.generate
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``password.generate(..)`` function allows the creation passwords, which still have an appropriate amount of entropy, as per an AWS password policy. The function takes a single ``IAM.AccountPasswordPolicy`` object, which returns a password which is suitable for the password policy. For Example:
+
+::
+
+    >>> from awsauthhelper import password
+    >>> password_policy = session().resource('iam').AccountPasswordPolicy()
+
+    >>> password.generate(password_policy)
+
+    'dR|8_5&@a4U3'
+
+    >>> password.generate()
+
+    'u6qbsi8L-'
 
 Contributing
 ------------
