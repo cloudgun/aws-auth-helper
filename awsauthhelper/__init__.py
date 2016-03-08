@@ -25,7 +25,7 @@ class AWSArgumentParser(argparse.ArgumentParser):
       --message MESSAGE
 
     # Add the aws defaults
-    >>> aws_options = awsauthhelper.AWSArgumentParser(default_role_session_name='elasticsearch_creation')
+    >>> aws_options = awsauthhelper.AWSArgumentParser(role_session_name='elasticsearch_creation')
 
     >>> my_aws_app = argparse.ArgumentParser(
     >>>     description='Lists EC2 instances',
@@ -88,6 +88,10 @@ class AWSArgumentParser(argparse.ArgumentParser):
                                help='This can be the name of a profile stored in a credential or config file, or default to use the default profile.',
                                default=profile, required=False)
         aws_group.add_argument('--role', help='Fully qualified role arn to assume')
+        aws_group.add_argument('--config-path', action=EnvDefault, envvar='AWS_CONFIG_FILE',
+                               help='Specify a custom location for ~/.aws/config', default=None)
+        aws_group.add_argument('--credentials-path', action=EnvDefault, envvar='AWS_SHARED_CREDENTIALS_FILE',
+                               help='Specify a custom location for ~/.aws/credentials', default=None)
         aws_group.add_argument('--auth-debug',
                                help='Enter debug mode, which will print credentials and then exist at `create_session`.',
                                action='store_true', default=False)
@@ -156,7 +160,8 @@ class Credentials(object):
     default = None
 
     def __init__(self, region=None, aws_secret_access_key=None, aws_access_key_id=None, aws_session_token=None,
-                 profile=None, role=None, role_session_name=None, auth_debug=False, **kwargs):
+                 profile=None, role=None, role_session_name=None, config_path=None, credentials_path=None,
+                 auth_debug=False, **kwargs):
 
         self.auth_debug = auth_debug
 
@@ -184,6 +189,24 @@ class Credentials(object):
 
         self.role_session_name = role_session_name
         self.logger.debug('__init__(): self.role_session_name={value}'.format(value=role_session_name))
+
+        self.credentials_path = credentials_path
+        self.logger.debug('__init__(): self.credentials_path={value}'.format(value=credentials_path))
+        # Tell boto that we have a custom credentials location
+        if self.credentials_path is not None:
+            self.logger.debug('__init__(): os.environ[\'AWS_SHARED_CREDENTIALS_FILE\'] = {value}'.format(
+                    value=self.credentials_path
+            ))
+            os.environ['AWS_SHARED_CREDENTIALS_FILE'] = self.credentials_path
+
+        self.config_path = config_path
+        self.logger.debug('__init__(): self.config_path={value}'.format(value=config_path))
+        # Tell boto that we have a custom config location
+        if self.config_path is not None:
+            self.logger.debug('__init__(): os.environ[\'AWS_CONFIG_FILE\'] = {value}'.format(
+                    value=self.config_path
+            ))
+            os.environ['AWS_CONFIG_FILE'] = self.config_path
 
         # Vars to store original creds, incase we assume a role
         self._freeze = {}
