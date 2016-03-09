@@ -97,10 +97,10 @@ class AWSArgumentParser(argparse.ArgumentParser):
                                default=profile, required=(auth_must_use_profile or auth_must_use_profile_role))
         aws_group.add_argument('--role', help='Fully qualified role arn to assume', required=auth_must_use_profile_role)
         aws_group.add_argument('--config-path', action=EnvDefault, envvar='AWS_CONFIG_FILE',
-                               help='Specify a custom location for ~/.aws/config', default=auth_must_use_config_file)
+                               help='Specify a custom location for ~/.aws/config', required=auth_must_use_config_file)
         aws_group.add_argument('--credentials-path', action=EnvDefault, envvar='AWS_SHARED_CREDENTIALS_FILE',
                                help='Specify a custom location for ~/.aws/credentials',
-                               default=auth_must_use_credentials_file)
+                               required=auth_must_use_credentials_file)
         aws_group.add_argument('--auth-debug',
                                help='Enter debug mode, which will print credentials and then exist at `create_session`.',
                                action='store_true', default=False)
