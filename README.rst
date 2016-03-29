@@ -9,10 +9,10 @@ authentication
   :alt: Code issues
 
 .. image:: https://codecov.io/github/drewsonne/pyum/coverage.svg?branch=master
-  :target: https://codecov.io/github/cloudgun/aws-auth-helper?branch=master
+  :target: https://codecov.io/github/drewsonne/aws-auth-helper?branch=master
 
-.. image:: https://travis-ci.org/cloudgun/aws-auth-helper.svg?branch=master
-  :target: https://travis-ci.org/cloudgun/aws-auth-helper
+.. image:: https://travis-ci.org/drewsonne/aws-auth-helper.svg?branch=master
+  :target: https://travis-ci.org/drewsonne/aws-auth-helper
 
 Setup
 -----
