@@ -6,6 +6,9 @@
 Welcome to aws-auth-helper's documentation!
 ===========================================
 
+Helper library providing ArgumentParser and Credentials class for AWS
+authentication
+
 Contents:
 
 .. toctree::
