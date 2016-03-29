@@ -10,14 +10,22 @@ __author__ = 'drews'
 class AWSArgumentParser(argparse.ArgumentParser):
     """
     Helper Class containing a preset set of cli arguments for parsing into the Credentials object.
+    If not explicity set, arguments are read from the environment variables.
     """
 
     def __init__(self, role_session_name, region=None, profile=None, enforce_auth_type=None, **kwargs):
+        """
+        Create our arguments and determine if we need to enforce an auth method.
+        
+        :param str role_session_name: Default name for the role session, in case a user does not provide one.
+        :param str region: AWS Region
+        :param str profile: Name of the profile in the AWS profile to use as the base configuration.
+        :param str enforce_auth_type: The Authentication method can be locked to one of {'keys', 'keys_with_session', 'profile', 'profile_role','config','credentials'}
+        :param dict kwargs: 
+        :return awsauthhelper.AWSArgumentParser: 
+        """
 
         super(AWSArgumentParser, self).__init__(add_help=False, **kwargs)
-
-        if 'default_role_session_name' in kwargs:
-            role_session_name = kwargs['default_role_session_name']
 
         aws_group = self.add_argument_group('AWS credentials')
 
@@ -190,7 +198,8 @@ class Credentials(object):
     def assume_role(self):
         """
         Check if we have a role, and assume it if we do. Otherwise, raise exception.
-        :return:
+        
+        :return awsauthhelper.Credentials:
         """
         if self.using_role():
             self.logger.debug('assume_role(): self.using_role()=True')
@@ -203,7 +212,8 @@ class Credentials(object):
     def freeze(self):
         """
         Take a snapshot fo the credentials and remember them.
-        :return:
+        
+        :return awsauthhelper.Credentials:
         """
         for property in self.freeze_properties:
             self._freeze[property] = getattr(self, property, None)
@@ -214,7 +224,8 @@ class Credentials(object):
     def reset(self):
         """
         Reset Credentials object back to original state, pre any role assumptions.
-        :return:
+
+        :return awsauthhelper.Credentials:
         """
         self.logger.debug('reset(): before self={value}'.format(value=vars(self)))
         for property in self.freeze_properties:
@@ -226,6 +237,7 @@ class Credentials(object):
     def create_session(self, internal=False):
         """
         Return a function to generate our session with local vars as a closure.
+        
         :param bool internal: Wether or not this method was called from internal or external to the class
         :return callable(region):
         """
@@ -265,8 +277,9 @@ class Credentials(object):
 
     def _assume_role(self):
         """
-        Assume the new role, and store the old credentials
-        :return:
+        Assume the new role, and store the old credentials.
+        
+        :return awsauthhelper.Credentials:
         """
         # Remember the state
         self.freeze()
@@ -301,7 +314,8 @@ class Credentials(object):
 
     def _build_kwargs(self):
         """
-        Build a dict, which can be used to pass into a boto3.Session object
+        Build a dict, which can be used to pass into a boto3.Session object.
+        
         :return Dict[str, str]:
         """
         keys = {
@@ -315,7 +329,8 @@ class Credentials(object):
     def has_keys(self):
         """
         Do we have key credentials?
-        :return:
+        
+        :return bool:
         """
         return (self.aws_access_key_id is not None) and \
                (self.aws_secret_access_key is not None)
@@ -323,7 +338,8 @@ class Credentials(object):
     def has_session_keys(self):
         """
         Do we have temporal key credentials?
-        :return:
+        
+        :return bool:
         """
         return (self.aws_session_token is not None) and \
                self.has_keys()
@@ -331,21 +347,24 @@ class Credentials(object):
     def has_profile(self):
         """
         Do we have profile credentials?
-        :return:
+        
+        :return bool:
         """
         return self.profile is not None
 
     def has_role(self):
         """
         Do we have a role to assume?
-        :return:
+        
+        :return bool:
         """
         return self.role is not None
 
     def using_role(self):
         """
-        If we have a role and either a set of credentials or a profile, then we should assume the role
-        :return:
+        If we have a role and either a set of credentials or a profile, then we should assume the role.
+        
+        :return bool:
         """
         return (
             self.has_role() and
@@ -358,7 +377,8 @@ class Credentials(object):
         If a role has been assumed, the assumed credentials will be used.
         If a role is set but has not been assumed, the base credentials will be used.
         WARNING: This will affect all calls made to boto3.
-        :return:
+        
+        :return awsauthhelper.Credentials:
         """
         boto3.setup_default_session(**self._build_kwargs())
 
