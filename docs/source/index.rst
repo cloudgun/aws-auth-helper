@@ -16,16 +16,11 @@ aws-auth-helper 1.4.0 documentation
 
     introduction
     installation
-    tutorial_01
-    tutorial_02
-    tutorial_03
+    tutorial
     api
     changes
     references
-    authors
-    contributors
-    copyright
-    license
+    licence
 
 ------------------
 Indices and tables

@@ -1,8 +1,7 @@
-import argparse
 import os
-import logging
-
 import boto3
+import logging
+import argparse
 from boto3 import Session
 
 __author__ = 'drews'
@@ -10,61 +9,7 @@ __author__ = 'drews'
 
 class AWSArgumentParser(argparse.ArgumentParser):
     """
-    >>> import argparse
-    >>> import awsauthhelper
-
-    # My cli utilities arguments
-    >>> my_options = argparse.ArgumentParser(description='Lists EC2 instances')
-    >>> my_options.add_argument('--message', required=True)
-    >>> my_options.print_help()
-
-    usage: my_app [-h] --message MESSAGE
-
-    Lists EC2 instances
-
-    optional arguments:
-      -h, --help         show this help message and exit
-      --message MESSAGE
-
-    # Add the aws defaults
-    >>> aws_options = awsauthhelper.AWSArgumentParser(role_session_name='elasticsearch_creation')
-
-    >>> my_aws_app = argparse.ArgumentParser(
-    >>>     description='Lists EC2 instances',
-    >>>     parents=[
-    >>>       aws_options
-    >>>     ]
-    >>> )
-    >>> my_aws_app.add_argument('--max-instances', type=int)
-    >>> my_aws_app.print_help()
-    usage: demo.py [-h] [--aws-access-key-id AWS_ACCESS_KEY_ID]
-               [--aws-secret-access-key AWS_SECRET_ACCESS_KEY]
-               [--aws-session-token AWS_SESSION_TOKEN] [--region REGION]
-               [--profile PROFILE] [--role ROLE]
-               [--role-session-name ROLE_SESSION_NAME]
-               [--max-instances MAX_INSTANCES]
-
-    Lists EC2 instances
-
-    optional arguments:
-      -h, --help            show this help message and exit
-      --aws-access-key-id AWS_ACCESS_KEY_ID
-                            AWS access key
-      --aws-secret-access-key AWS_SECRET_ACCESS_KEY
-                            Access and secret key variables override credentials
-                            stored in credential and config files
-      --aws-session-token AWS_SESSION_TOKEN
-                            A session token is only required if you are using
-                            temporary security credentials.
-      --region REGION       This variable overrides the default region of the in-
-                            use profile, if set.
-      --profile PROFILE     This can be the name of a profile stored in a
-                            credential or config file, or default to use the
-                            default profile.
-      --role ROLE           Role to assume
-      --role-session-name ROLE_SESSION_NAME
-                            If you have assigned a role, set a RoleSessionName
-      --max-instances MAX_INSTANCES
+    Helper Class containing a preset set of cli arguments for parsing into the Credentials object.
     """
 
     def __init__(self, role_session_name, region=None, profile=None, enforce_auth_type=None, **kwargs):
@@ -117,7 +62,7 @@ class AWSArgumentParser(argparse.ArgumentParser):
         aws_group.add_argument('--role-session-name', **role_options)
 
 
-DEBUG_ENV = os.environ.get('DEBUG', False)
+DEBUG_ENV = os.environ.get('DEBUG_ENV', False)
 if DEBUG_ENV:
     logging.basicConfig(level=logging.DEBUG)
 
@@ -150,20 +95,22 @@ class Credentials(object):
     Encapsulates processing of AWS credentials.
     The general usage is the following form:
 
-        >>> credentials = awsauthhelper.Credentials(**kwargs) # **kwargs passed from awsauthhelper.get_arg_parser
+        >>> credentials = awsauthhelper.Credentials(**kwargs) # **kwargs passed from AWSArgumentParser.parse_args()
         >>> default_session = credentials.create_session()
 
-        # Use our default credentials to get a list of all regions
+    Use our default credentials to get a list of all regions
+        
         >>> regions = default_session().client('ec2').describe_regions()
 
-        # For the rest of our script, we want to assume a role
+    For the rest of our script, we want to assume a role
+        
         >>> if credentials.using_role():
         >>>     credentials.freeze()                 # Remember our default credentials
         >>>     credentials.assume_role()            # Assume the role we provided in **kwargs
         >>> role_session = credentials.create_session()
-
+        <BLANKLINE>
         >>> for region in regions:
-               # The session object can be 're-authorised' across regions.
+        >>>    # The session object can be 're-authorised' across regions.
         >>>    print(role_session(region=region['RegionName']).client('ec2').describe_instances())
 
     """
@@ -173,7 +120,22 @@ class Credentials(object):
     def __init__(self, region=None, aws_secret_access_key=None, aws_access_key_id=None, aws_session_token=None,
                  profile=None, role=None, role_session_name=None, config_path=None, credentials_path=None,
                  auth_debug=False, **kwargs):
+        """
+        Handle the assumption of roles, and creation of Session objects.
 
+        :param str region: AWS region 
+        :param str aws_secret_access_key:  AWS_SECRET_ACCESS_KEY to use for the base credentials.
+        :param str aws_access_key_id: AWS_ACCESS_KEY_ID to use for the base credentials.
+        :param str aws_session_token:  AWS_SESSION_TOKEN to use for the base credentials. Generally this should not be needed as roles are assumed through providing a role argument.
+        :param str profile: Name of the profile in the AWS profile to use as the base configuration.
+        :param str role: ARN of the AWS IAM Role to assume.
+        :param str role_session_name: Custom name of the role session to override the default.
+        :param str config_path:  Custom path to the aws config file if it is not in a location botocore expects.
+        :param str credentials_path: Custom path to the aws credentials file if it is not in a location botocore expects.
+        :param bool auth_debug: Wether or not to print debug information. If True, then exit() is throw at create_session()
+        :param dict kwargs: catcher to allow **var(my_args.parse_args(...)) to be passed in. Is not used
+        :return awsauthhelper.Credentials: 
+        """
         self.auth_debug = auth_debug
 
         if self.auth_debug:
