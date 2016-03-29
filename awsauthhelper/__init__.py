@@ -1,6 +1,8 @@
 import argparse
 import os
 import logging
+
+import boto3
 from boto3 import Session
 
 __author__ = 'drews'
@@ -115,7 +117,7 @@ class AWSArgumentParser(argparse.ArgumentParser):
         aws_group.add_argument('--role-session-name', **role_options)
 
 
-DEBUG_ENV = False
+DEBUG_ENV = os.environ.get('DEBUG', False)
 if DEBUG_ENV:
     logging.basicConfig(level=logging.DEBUG)
 
@@ -129,8 +131,8 @@ class EnvDefault(argparse.Action):
         if not default and envvar:
             if envvar in os.environ:
                 logging.debug('EnvDefault:__init__(): os.environ["{envvar}"]={value}'.format(
-                        value=os.environ[envvar],
-                        envvar=envvar
+                    value=os.environ[envvar],
+                    envvar=envvar
                 ))
                 default = os.environ[envvar]
             else:
@@ -204,7 +206,7 @@ class Credentials(object):
         # Tell boto that we have a custom credentials location
         if self.credentials_path is not None:
             self.logger.debug('__init__(): os.environ[\'AWS_SHARED_CREDENTIALS_FILE\'] = {value}'.format(
-                    value=self.credentials_path
+                value=self.credentials_path
             ))
             os.environ['AWS_SHARED_CREDENTIALS_FILE'] = self.credentials_path
 
@@ -213,7 +215,7 @@ class Credentials(object):
         # Tell boto that we have a custom config location
         if self.config_path is not None:
             self.logger.debug('__init__(): os.environ[\'AWS_CONFIG_FILE\'] = {value}'.format(
-                    value=self.config_path
+                value=self.config_path
             ))
             os.environ['AWS_CONFIG_FILE'] = self.config_path
 
@@ -310,8 +312,8 @@ class Credentials(object):
         # Assume the role
         session = self.create_session(internal=True)
         credentials = session().client('sts').assume_role(
-                RoleArn=self.role,
-                RoleSessionName=self.role_session_name
+            RoleArn=self.role,
+            RoleSessionName=self.role_session_name
         )
         self.logger.debug('_assume_role(): credentials={value}'.format(value=credentials))
 
@@ -321,19 +323,32 @@ class Credentials(object):
 
         self.aws_access_key_id = credentials['Credentials']['AccessKeyId']
         self.logger.debug(
-                '_assume_role(): self.aws_access_key_id={value}'.format(
-                        value=credentials['Credentials']['AccessKeyId']))
+            '_assume_role(): self.aws_access_key_id={value}'.format(
+                value=credentials['Credentials']['AccessKeyId']))
 
         self.aws_secret_access_key = credentials['Credentials']['SecretAccessKey']
         self.logger.debug('_assume_role(): self.aws_secret_access_key={value}'.format(
-                value=credentials['Credentials']['SecretAccessKey']))
+            value=credentials['Credentials']['SecretAccessKey']))
 
         self.aws_session_token = credentials['Credentials']['SessionToken']
         self.logger.debug(
-                '_assume_role(): self.aws_session_token={value}'.format(
-                        value=credentials['Credentials']['SessionToken']))
+            '_assume_role(): self.aws_session_token={value}'.format(
+                value=credentials['Credentials']['SessionToken']))
 
         return self
+
+    def _build_kwargs(self):
+        """
+        Build a dict, which can be used to pass into a boto3.Session object
+        :return Dict[str, str]:
+        """
+        keys = {
+            'aws_access_key_id': self.aws_access_key_id,
+            'aws_secret_access_key': self.aws_secret_access_key
+        }
+        if self.has_session_keys():
+            keys['aws_session_token'] = self.aws_session_token
+        return keys
 
     def has_keys(self):
         """
@@ -375,6 +390,16 @@ class Credentials(object):
             (self.has_keys() or self.has_profile())
         )
 
+    def use_as_global(self):
+        """
+        Set this object to use its current credentials as the global boto3 settings.
+        If a role has been assumed, the assumed credentials will be used.
+        If a role is set but has not been assumed, the base credentials will be used.
+        WARNING: This will affect all calls made to boto3.
+        :return:
+        """
+        boto3.setup_default_session(**self._build_kwargs())
+
 
 def validate_creds(aws_access_key_id, aws_secret_access_key, aws_session_token, profile, **kwargs):
     """
@@ -389,22 +414,22 @@ def validate_creds(aws_access_key_id, aws_secret_access_key, aws_session_token, 
     # 1 - Check if we have temporal keys
     if (aws_session_token is not None) and (aws_secret_access_key is None) or (aws_access_key_id is None):
         raise argparse.ArgumentError(
-                argument=None,
-                message="'--aws-session-token' requires '--aws-secret-access-key' and '--aws-access-key-id'"
+            argument=None,
+            message="'--aws-session-token' requires '--aws-secret-access-key' and '--aws-access-key-id'"
         )
 
     # 2 - Check if we have a profile
     if profile and (aws_access_key_id or aws_secret_access_key):
         raise argparse.ArgumentError(
-                argument=None,
-                message="You can not set both '--profile' and '--aws-secret-access-key'/'--aws-access-key-id'"
+            argument=None,
+            message="You can not set both '--profile' and '--aws-secret-access-key'/'--aws-access-key-id'"
         )
 
     # 3 - Check if we have keys
     if bool(aws_secret_access_key) != bool(aws_access_key_id):
         raise argparse.ArgumentError(
-                argument=None,
-                message="'Both '--aws-secret-access-key' and '--aws-access-key-id' must be provided."
+            argument=None,
+            message="'Both '--aws-secret-access-key' and '--aws-access-key-id' must be provided."
         )
 
     return True
