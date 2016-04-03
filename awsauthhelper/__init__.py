@@ -132,9 +132,9 @@ class Credentials(object):
         Handle the assumption of roles, and creation of Session objects.
 
         :param str region: AWS region 
-        :param str aws_secret_access_key:  AWS_SECRET_ACCESS_KEY to use for the base credentials.
-        :param str aws_access_key_id: AWS_ACCESS_KEY_ID to use for the base credentials.
-        :param str aws_session_token:  AWS_SESSION_TOKEN to use for the base credentials. Generally this should not be needed as roles are assumed through providing a role argument.
+        :param str aws_secret_access_key:  ``AWS_SECRET_ACCESS_KEY`` to use for the base credentials.
+        :param str aws_access_key_id: ``AWS_ACCESS_KEY_ID`` to use for the base credentials.
+        :param str aws_session_token:  ``AWS_SESSION_TOKEN`` to use for the base credentials. Generally this should not be needed as roles are assumed through providing a role argument.
         :param str profile: Name of the profile in the AWS profile to use as the base configuration.
         :param str role: ARN of the AWS IAM Role to assume.
         :param str role_session_name: Custom name of the role session to override the default.
