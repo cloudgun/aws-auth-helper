@@ -22,7 +22,7 @@ Installation
 
 ::
 
-    $ pip install awsauthhelper
+    $ pip install aws-auth-helper
 
 Usage
 -----

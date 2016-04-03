@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 
 setup(
-    name='awsauthhelper',
+    name='aws-auth-helper',
     long_description=open('README.rst').read(),
     description='Helper library providing ArgumentParser and Credentials class for AWS authentication',
     version='1.4.0',
