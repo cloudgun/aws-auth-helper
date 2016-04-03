@@ -1,3 +1,4 @@
+import os
 from unittest import TestCase
 
 from awsauthhelper import EnvDefault
@@ -5,4 +6,11 @@ from awsauthhelper import EnvDefault
 
 class TestEnvDefault(TestCase):
     def test_suceeds(self):
-        env_object = EnvDefault()
+        os.environ['testEnv'] = 'this_value'
+        env_object = EnvDefault(
+            'testEnv',
+            option_strings='--test-env',
+            dest='test_env'
+        )
+
+        self.assertEqual(env_object.default, os.environ['testEnv'])
