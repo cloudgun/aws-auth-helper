@@ -1,5 +1,5 @@
 ===================================
-aws-auth-helper 1.4.0 documentation
+awsauthhelper 1.4.0 documentation
 ===================================
 
 Helper library providing ArgumentParser and Credentials class for AWS
@@ -9,9 +9,9 @@ authentication
   :target: https://www.quantifiedcode.com/app/project/ea5b743486474c47b50734f846586474
   :alt: Code issues
 .. image:: https://codecov.io/github/drewsonne/pyum/coverage.svg?branch=master
-  :target: https://codecov.io/github/drewsonne/aws-auth-helper?branch=master
-.. image:: https://travis-ci.org/drewsonne/aws-auth-helper.svg?branch=master
-  :target: https://travis-ci.org/drewsonne/aws-auth-helper
+  :target: https://codecov.io/github/drewsonne/awsauthhelper?branch=master
+.. image:: https://travis-ci.org/drewsonne/awsauthhelper.svg?branch=master
+  :target: https://travis-ci.org/drewsonne/awsauthhelper
 
 
 .. toctree::
