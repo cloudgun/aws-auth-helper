@@ -40,3 +40,15 @@ class TestCredentials(TestCase):
             'aws_access_key_id': 'my_id',
             'aws_session_token': 'my_token'
         })
+
+    def test_freeze(self):
+        creds = Credentials()
+        creds.freeze()
+        self.assertDictEqual(creds._freeze, {
+            'aws_access_key_id': None,
+            'aws_secret_access_key': None,
+            'aws_session_token': None,
+            'profile': None,
+            'region': None,
+            'role': None
+        })
