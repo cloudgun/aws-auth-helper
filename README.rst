@@ -47,12 +47,12 @@ arguments of a ``argparser.ArgumentParser(...)`` in addition to:
 - *region* is a default value in case ``--region`` is not provided by the user.
 - *profile* is a default value in case ``--profile`` is not provided by the user.
 - *enforce_auth_type* enforces the type of arguments which can be passed to this utility. Can be one of:
-   - ``'keys'``
-   - ``'keys_with_session'``
-   - ``'profile'``
-   - ``'profile_role'``
-   - ``'config'``
-   - ``'credentials'``
+ - ``'keys'``
+ - ``'keys_with_session'``
+ - ``'profile'``
+ - ``'profile_role'``
+ - ``'config'``
+ - ``'credentials'``
 
 
 Like its superclass, ``awsauthhelper.ArgumentParser(...)`` allows
@@ -109,7 +109,7 @@ awsauthhelper's ArgumentParser, rather than the reverse. For example,
       --auth-debug          Enter debug mode, which will print credentials and
                             then exist at `create_session`.
       --role-session-name ROLE_SESSION_NAME
-                            If you have assigned a role, set a --role-session-name  
+                            If you have assigned a role, set a --role-session-name
 
 *Note* that the AWS options appeared after our application options.
 
