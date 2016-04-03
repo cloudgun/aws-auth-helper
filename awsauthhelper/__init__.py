@@ -16,13 +16,14 @@ class AWSArgumentParser(argparse.ArgumentParser):
     def __init__(self, role_session_name, region=None, profile=None, enforce_auth_type=None, **kwargs):
         """
         Create our arguments and determine if we need to enforce an auth method.
-        
+
         :param str role_session_name: Default name for the role session, in case a user does not provide one.
         :param str region: AWS Region
         :param str profile: Name of the profile in the AWS profile to use as the base configuration.
-        :param str enforce_auth_type: The Authentication method can be locked to one of {'keys', 'keys_with_session', 'profile', 'profile_role','config','credentials'}
-        :param dict kwargs: 
-        :return awsauthhelper.AWSArgumentParser: 
+        :param str enforce_auth_type: The Authentication method can be locked to one of {'keys', 'keys_with_session', \
+            'profile', 'profile_role','config','credentials'}
+        :param dict kwargs:
+        :return awsauthhelper.AWSArgumentParser:
         """
 
         super(AWSArgumentParser, self).__init__(add_help=False, **kwargs)
@@ -39,7 +40,8 @@ class AWSArgumentParser(argparse.ArgumentParser):
         aws_group.add_argument('--aws-access-key-id', action=EnvDefault, envvar='AWS_ACCESS_KEY_ID',
                                help='AWS access key', required=(auth_must_use_keys or auth_must_use_keys_with_session))
         aws_group.add_argument('--aws-secret-access-key', action=EnvDefault, envvar='AWS_SECRET_ACCESS_KEY',
-                               help='Access and secret key variables override credentials stored in credential and config files',
+                               help=('Access and secret key variables override credentials '
+                                     'stored in credential and config files'),
                                required=(auth_must_use_keys or auth_must_use_keys_with_session))
         aws_group.add_argument('--aws-session-token', action=EnvDefault, envvar='AWS_SESSION_TOKEN',
                                help='A session token is only required if you are using temporary security credentials.',
@@ -48,7 +50,8 @@ class AWSArgumentParser(argparse.ArgumentParser):
                                help='This variable overrides the default region of the in-use profile, if set.',
                                default=region, required=False)
         aws_group.add_argument('--profile', action=EnvDefault, envvar='AWS_DEFAULT_PROFILE',
-                               help='This can be the name of a profile stored in a credential or config file, or default to use the default profile.',
+                               help=('This can be the name of a profile stored in a credential or config file, or '
+                                     'default to use the default profile.'),
                                default=profile, required=(auth_must_use_profile or auth_must_use_profile_role))
         aws_group.add_argument('--role', help='Fully qualified role arn to assume', required=auth_must_use_profile_role)
         aws_group.add_argument('--config-path', action=EnvDefault, envvar='AWS_CONFIG_FILE',
@@ -57,7 +60,7 @@ class AWSArgumentParser(argparse.ArgumentParser):
                                help='Specify a custom location for ~/.aws/credentials',
                                required=auth_must_use_credentials_file)
         aws_group.add_argument('--auth-debug',
-                               help='Enter debug mode, which will print credentials and then exist at `create_session`.',
+                               help='Enter debug mode, which will print credentials and  exist at `create_session`.',
                                action='store_true', default=False)
 
         # We can optionally have a default role session name.
@@ -101,26 +104,6 @@ class EnvDefault(argparse.Action):
 class Credentials(object):
     """
     Encapsulates processing of AWS credentials.
-    The general usage is the following form:
-
-        >>> credentials = awsauthhelper.Credentials(**kwargs) # **kwargs passed from AWSArgumentParser.parse_args()
-        >>> default_session = credentials.create_session()
-
-    Use our default credentials to get a list of all regions
-        
-        >>> regions = default_session().client('ec2').describe_regions()
-
-    For the rest of our script, we want to assume a role
-        
-        >>> if credentials.using_role():
-        >>>     credentials.freeze()                 # Remember our default credentials
-        >>>     credentials.assume_role()            # Assume the role we provided in **kwargs
-        >>> role_session = credentials.create_session()
-        <BLANKLINE>
-        >>> for region in regions:
-        >>>    # The session object can be 're-authorised' across regions.
-        >>>    print(role_session(region=region['RegionName']).client('ec2').describe_instances())
-
     """
     freeze_properties = ['region', 'aws_secret_access_key', 'aws_access_key_id', 'aws_session_token', 'profile', 'role']
     default = None
@@ -131,18 +114,20 @@ class Credentials(object):
         """
         Handle the assumption of roles, and creation of Session objects.
 
-        :param str region: AWS region 
+        :param str region: AWS region
         :param str aws_secret_access_key:  ``AWS_SECRET_ACCESS_KEY`` to use for the base credentials.
         :param str aws_access_key_id: ``AWS_ACCESS_KEY_ID`` to use for the base credentials.
-        :param str aws_session_token:  ``AWS_SESSION_TOKEN`` to use for the base credentials. Generally this should not be needed as roles are assumed through providing a role argument.
+        :param str aws_session_token:  ``AWS_SESSION_TOKEN`` to use for the base credentials. Generally this should not\
+            be needed as roles are assumed through providing a role argument.
         :param str profile: Name of the profile in the AWS profile to use as the base configuration.
         :param str role: ARN of the AWS IAM Role to assume.
         :param str role_session_name: Custom name of the role session to override the default.
         :param str config_path:  Custom path to the aws config file if it is not in a location botocore expects.
-        :param str credentials_path: Custom path to the aws credentials file if it is not in a location botocore expects.
-        :param bool auth_debug: Wether or not to print debug information. If True, then exit() is throw at create_session()
-        :param dict kwargs: catcher to allow **var(my_args.parse_args(...)) to be passed in. Is not used
-        :return awsauthhelper.Credentials: 
+        :param str credentials_path: Custom path to the aws credentials file if it is not in a path botocore expects.
+        :param bool auth_debug: Whether or not to print debug information. If True,  exit() is throw at create_session()
+        :param dict kwargs: catcher to allow arbitrary **var(my_args.parse_args(...)) to be passed in.\
+            Arguments in **kwargs not used at all.
+        :return awsauthhelper.Credentials:
         """
         self.auth_debug = auth_debug
 
@@ -198,8 +183,9 @@ class Credentials(object):
     def assume_role(self):
         """
         Check if we have a role, and assume it if we do. Otherwise, raise exception.
-        
-        :return awsauthhelper.Credentials:
+
+        :raises ValueError: If a role has not be specified.
+        :return awsauthhelper.Credentials: Allow chaining.
         """
         if self.using_role():
             self.logger.debug('assume_role(): self.using_role()=True')
@@ -211,12 +197,12 @@ class Credentials(object):
 
     def freeze(self):
         """
-        Take a snapshot fo the credentials and remember them.
-        
+        Take a snapshot of the credentials and remember them.
+
         :return awsauthhelper.Credentials:
         """
-        for property in self.freeze_properties:
-            self._freeze[property] = getattr(self, property, None)
+        for property_key in self.freeze_properties:
+            self._freeze[property_key] = getattr(self, property_key, None)
         self.logger.debug('freeze(): self._freeze={value}'.format(value=self._freeze))
 
         return self
@@ -228,8 +214,8 @@ class Credentials(object):
         :return awsauthhelper.Credentials:
         """
         self.logger.debug('reset(): before self={value}'.format(value=vars(self)))
-        for property in self.freeze_properties:
-            setattr(self, property, self._freeze[property])
+        for property_key in self.freeze_properties:
+            setattr(self, property_key, self._freeze[property_key])
         self.logger.debug('reset(): after self={value}'.format(value=vars(self._freeze)))
 
         return self
@@ -237,7 +223,7 @@ class Credentials(object):
     def create_session(self, internal=False):
         """
         Return a function to generate our session with local vars as a closure.
-        
+
         :param bool internal: Wether or not this method was called from internal or external to the class
         :return callable(region):
         """
@@ -264,6 +250,12 @@ class Credentials(object):
         exit_at_session = self.auth_debug & (not internal)
 
         def build_session(region=default_region):
+            """
+            Return a Session for the specified region
+
+            :param str region: AWS region to authenticate to
+            :return boto3.session.Session:
+            """
             session_credentials['region_name'] = region
             self.logger.debug('build_session(): region={value}'.format(value=self.region))
 
@@ -278,7 +270,7 @@ class Credentials(object):
     def _assume_role(self):
         """
         Assume the new role, and store the old credentials.
-        
+
         :return awsauthhelper.Credentials:
         """
         # Remember the state
@@ -315,7 +307,7 @@ class Credentials(object):
     def _build_kwargs(self):
         """
         Build a dict, which can be used to pass into a boto3.Session object.
-        
+
         :return Dict[str, str]:
         """
         keys = {
@@ -329,7 +321,7 @@ class Credentials(object):
     def has_keys(self):
         """
         Do we have key credentials?
-        
+
         :return bool:
         """
         return (self.aws_access_key_id is not None) and \
@@ -338,16 +330,15 @@ class Credentials(object):
     def has_session_keys(self):
         """
         Do we have temporal key credentials?
-        
+
         :return bool:
         """
-        return (self.aws_session_token is not None) and \
-               self.has_keys()
+        return (self.aws_session_token is not None) and self.has_keys()
 
     def has_profile(self):
         """
         Do we have profile credentials?
-        
+
         :return bool:
         """
         return self.profile is not None
@@ -355,7 +346,7 @@ class Credentials(object):
     def has_role(self):
         """
         Do we have a role to assume?
-        
+
         :return bool:
         """
         return self.role is not None
@@ -363,7 +354,7 @@ class Credentials(object):
     def using_role(self):
         """
         If we have a role and either a set of credentials or a profile, then we should assume the role.
-        
+
         :return bool:
         """
         return (
@@ -377,24 +368,31 @@ class Credentials(object):
         If a role has been assumed, the assumed credentials will be used.
         If a role is set but has not been assumed, the base credentials will be used.
         WARNING: This will affect all calls made to boto3.
-        
+
         :return awsauthhelper.Credentials:
         """
         boto3.setup_default_session(**self._build_kwargs())
 
 
-def validate_creds(aws_access_key_id, aws_secret_access_key, aws_session_token, profile, **kwargs):
+def validate_creds(aws_access_key_id=None, aws_secret_access_key=None, aws_session_token=None, profile=None, **kwargs):
     """
     Perform validation on CLI options
+
     :param str aws_access_key_id:
     :param str aws_secret_access_key:
     :param str aws_session_token:
     :param str profile:
     :param kwargs:
+    :raise argparse.ArgumentError: If ``--aws-session-token`` is specified but ``--aws-secret-access-key`` and \
+        ``--aws-access-key-id`` are not
+    :raise argparse.ArgumentError: If ``--profile`` is specified and ``--aws-secret-access-key`` or \
+        ``--aws-access-key-id`` are also specified.
+    :raise argparse.ArgumentError: If one of ``--aws-secret-access-key`` or ``--aws-access-key-id`` have been provided \
+        but not both.
     :return:
     """
     # 1 - Check if we have temporal keys
-    if (aws_session_token is not None) and (aws_secret_access_key is None) or (aws_access_key_id is None):
+    if (aws_session_token is not None) and ((aws_secret_access_key is None) or (aws_access_key_id is None)):
         raise argparse.ArgumentError(
             argument=None,
             message="'--aws-session-token' requires '--aws-secret-access-key' and '--aws-access-key-id'"

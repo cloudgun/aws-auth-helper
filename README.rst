@@ -1,4 +1,4 @@
-aws-auth-helper
+awsauthhelper
 ===============
 
 Helper library providing ArgumentParser and Credentials class for AWS
@@ -9,10 +9,10 @@ authentication
   :alt: Code issues
 
 .. image:: https://codecov.io/github/drewsonne/pyum/coverage.svg?branch=master
-  :target: https://codecov.io/github/drewsonne/aws-auth-helper?branch=master
+  :target: https://codecov.io/github/drewsonne/awsauthhelper?branch=master
 
-.. image:: https://travis-ci.org/drewsonne/aws-auth-helper.svg?branch=master
-  :target: https://travis-ci.org/drewsonne/aws-auth-helper
+.. image:: https://travis-ci.org/drewsonne/awsauthhelper.svg?branch=master
+  :target: https://travis-ci.org/drewsonne/awsauthhelper
 
 Setup
 -----
@@ -47,12 +47,12 @@ arguments of a ``argparser.ArgumentParser(...)`` in addition to:
 - *region* is a default value in case ``--region`` is not provided by the user.
 - *profile* is a default value in case ``--profile`` is not provided by the user.
 - *enforce_auth_type* enforces the type of arguments which can be passed to this utility. Can be one of:
-   - ``'keys'``
-   - ``'keys_with_session'``
-   - ``'profile'``
-   - ``'profile_role'``
-   - ``'config'``
-   - ``'credentials'``
+ - ``'keys'``
+ - ``'keys_with_session'``
+ - ``'profile'``
+ - ``'profile_role'``
+ - ``'config'``
+ - ``'credentials'``
 
 
 Like its superclass, ``awsauthhelper.ArgumentParser(...)`` allows
@@ -109,7 +109,7 @@ awsauthhelper's ArgumentParser, rather than the reverse. For example,
       --auth-debug          Enter debug mode, which will print credentials and
                             then exist at `create_session`.
       --role-session-name ROLE_SESSION_NAME
-                            If you have assigned a role, set a --role-session-name  
+                            If you have assigned a role, set a --role-session-name
 
 *Note* that the AWS options appeared after our application options.
 
@@ -232,12 +232,12 @@ Create python virtual environment
 ::
 
     $ pyenv install 2.7.10
-    $ pyenv virtualenv 2.7.10 aws-auth-helper
+    $ pyenv virtualenv 2.7.10 awsauthhelper
     $ pyenv versions
     * system
       2.7.10
       myvirtualenv
-    $ pyenv activate aws-auth-helper
+    $ pyenv activate awsauthhelper
 
 Configuring environment
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -245,16 +245,16 @@ Configuring environment
 Now that you have a working virtualenv, you can install the utility in
 development mode. Keep in mind that the 'activate' step, is valid only
 for a single session. If you close the terminal you'll have to run
-``pyenv activate aws-auth-helper`` again. You can now run pip, python,
-and aws-auth-helper while only referring to the local python environment
-created in $WORKSPACE/aws-auth-helper. You can see this by running:
+``pyenv activate awsauthhelper`` again. You can now run pip, python,
+and awsauthhelper while only referring to the local python environment
+created in $WORKSPACE/awsauthhelper. You can see this by running:
 
 ::
 
     (my-utility)$ which pip
-    ~/.pyenv/versions/aws-auth-helper/bin/pip
+    ~/.pyenv/versions/awsauthhelper/bin/pip
     (my-utility)$ which python
-    ~/.pyenv/versions/aws-auth-helper/bin/python
+    ~/.pyenv/versions/awsauthhelper/bin/python
 
 Development Mode
 ~~~~~~~~~~~~~~~~
@@ -266,5 +266,5 @@ Installation
 
 ::
 
-    $ cd $WORKSPACE/aws-auth-helper
+    $ cd $WORKSPACE/awsauthhelper
     $ make install
