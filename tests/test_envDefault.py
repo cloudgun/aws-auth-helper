@@ -14,3 +14,13 @@ class TestEnvDefault(TestCase):
         )
 
         self.assertEqual(env_object.default, os.environ['testEnv'])
+
+    def test_suceeds_no_env(self):
+        del os.environ['testEnv']
+        env_object = EnvDefault(
+            'testEnv',
+            option_strings='--test-env',
+            dest='test_env'
+        )
+
+        self.assertIsNone(env_object.default)
