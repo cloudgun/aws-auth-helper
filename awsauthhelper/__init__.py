@@ -101,26 +101,6 @@ class EnvDefault(argparse.Action):
 class Credentials(object):
     """
     Encapsulates processing of AWS credentials.
-    The general usage is the following form:
-
-        >>> credentials = awsauthhelper.Credentials(**kwargs) # **kwargs passed from AWSArgumentParser.parse_args()
-        >>> default_session = credentials.create_session()
-
-    Use our default credentials to get a list of all regions
-        
-        >>> regions = default_session().client('ec2').describe_regions()
-
-    For the rest of our script, we want to assume a role
-        
-        >>> if credentials.using_role():
-        >>>     credentials.freeze()                 # Remember our default credentials
-        >>>     credentials.assume_role()            # Assume the role we provided in **kwargs
-        >>> role_session = credentials.create_session()
-        <BLANKLINE>
-        >>> for region in regions:
-        >>>    # The session object can be 're-authorised' across regions.
-        >>>    print(role_session(region=region['RegionName']).client('ec2').describe_instances())
-
     """
     freeze_properties = ['region', 'aws_secret_access_key', 'aws_access_key_id', 'aws_session_token', 'profile', 'role']
     default = None
@@ -141,7 +121,7 @@ class Credentials(object):
         :param str config_path:  Custom path to the aws config file if it is not in a location botocore expects.
         :param str credentials_path: Custom path to the aws credentials file if it is not in a location botocore expects.
         :param bool auth_debug: Wether or not to print debug information. If True, then exit() is throw at create_session()
-        :param dict kwargs: catcher to allow **var(my_args.parse_args(...)) to be passed in. Is not used
+        :param dict kwargs: catcher to allow arbitrary **var(my_args.parse_args(...)) to be passed in. Is not used at all.
         :return awsauthhelper.Credentials: 
         """
         self.auth_debug = auth_debug
@@ -199,7 +179,8 @@ class Credentials(object):
         """
         Check if we have a role, and assume it if we do. Otherwise, raise exception.
         
-        :return awsauthhelper.Credentials:
+        :raises ValueError: If a role has not be specified.
+        :return awsauthhelper.Credentials: Allow chaining.
         """
         if self.using_role():
             self.logger.debug('assume_role(): self.using_role()=True')
@@ -386,11 +367,18 @@ class Credentials(object):
 def validate_creds(aws_access_key_id, aws_secret_access_key, aws_session_token, profile, **kwargs):
     """
     Perform validation on CLI options
+    
     :param str aws_access_key_id:
     :param str aws_secret_access_key:
     :param str aws_session_token:
     :param str profile:
     :param kwargs:
+    :raise argparse.ArgumentError: If ``--aws-session-token`` is specified but ``--aws-secret-access-key`` and \
+        ``--aws-access-key-id`` are not
+    :raise argparse.ArgumentError: If ``--profile`` is specified and ``--aws-secret-access-key`` or \
+        ``--aws-access-key-id`` are also specified.
+    :raise argparse.ArgumentError: If one of ``--aws-secret-access-key`` or ``--aws-access-key-id`` have been provided \
+        but not both.
     :return:
     """
     # 1 - Check if we have temporal keys
