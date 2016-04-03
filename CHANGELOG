@@ -8,6 +8,8 @@ Changes since 1.3.3
 ^^^^^^^^^^^^^^^^^^^^
 
 * Added method Credentials.use_as_global() to allow the use of credentials with calls directly in the boto3 namespace.
+* Added more test cases
+* Changed default, profile, region, and role_session name parameter names in awsauthhelper.Credentials.__init__
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Specific bug fixes addressed in this release
