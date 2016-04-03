@@ -9,6 +9,7 @@ setup(
     packages=find_packages(),
     tests_requires=['unittest2','mock'],
     url='http://aws-auth-helper.readthedocs.org/',
+    download_url='https://github.com/drewsonne/awsauthhelper/archive/v.1.4.0.tar.gz',
     license='GPLv2',
     author='Drew J. Sonne',
     author_email='drew.sonne@gmail.com',
