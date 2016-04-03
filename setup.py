@@ -8,7 +8,7 @@ setup(
     install_requires=['boto3'],
     packages=find_packages(),
     tests_requires=['unittest2','mock'],
-    url='http://github.com/drewsonne/aws-auth-helper',
+    url='http://aws-auth-helper.readthedocs.org/',
     license='GPLv2',
     author='Drew J. Sonne',
     author_email='drew.sonne@gmail.com',
