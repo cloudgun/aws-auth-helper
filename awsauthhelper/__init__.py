@@ -197,7 +197,7 @@ class Credentials(object):
 
     def freeze(self):
         """
-        Take a snapshot fo the credentials and remember them.
+        Take a snapshot of the credentials and remember them.
 
         :return awsauthhelper.Credentials:
         """
