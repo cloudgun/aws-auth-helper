@@ -1,22 +1,33 @@
-.. aws-auth-helper documentation master file, created by
-   sphinx-quickstart on Tue Mar  8 21:22:28 2016.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+===================================
+aws-auth-helper 1.4.0 documentation
+===================================
 
-Welcome to aws-auth-helper's documentation!
-===========================================
+Helper library providing ArgumentParser and Credentials class for AWS
+authentication
 
-Contents:
+.. image:: https://www.quantifiedcode.com/api/v1/project/ea5b743486474c47b50734f846586474/badge.svg
+:target: https://www.quantifiedcode.com/app/project/ea5b743486474c47b50734f846586474
+  :alt: Code issues
+.. image:: https://codecov.io/github/drewsonne/pyum/coverage.svg?branch=master
+:target: https://codecov.io/github/drewsonne/aws-auth-helper?branch=master
+.. image:: https://travis-ci.org/drewsonne/aws-auth-helper.svg?branch=master
+:target: https://travis-ci.org/drewsonne/aws-auth-helper
+
 
 .. toctree::
-   :maxdepth: 2
+:maxdepth: 1
 
+    introduction
+    installation
+    tutorial
+    api
+    changes
+    references
+    licence
 
-
+------------------
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
-

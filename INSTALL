@@ -1,0 +1,86 @@
+aws-auth-helper is available in various packaged and non-packaged forms :
+
+- source code repository access
+- source release packages (tarball and zip formats)
+- Python eggs
+
+You can also build your own RPM packages, using bdist_rpm with setup.py
+available in the source tarball.
+
+---------------------
+Locating the software
+---------------------
+
+aws-auth-helper is available directly from the public subversion source code 
+repository.
+
+Details on how to check out the source code can be found here :
+
+    http://github.com/drewsonne/aws-auth-helper/
+
+Official milestone releases can be found here :
+
+    http://github.com/drewsonne/aws-auth-helper/downloads
+
+-----------------------
+Source Release Packages
+-----------------------
+
+Download the latest release tarball/zip file and extract it to a temporary
+location or check out the source from the code hosting site into a local
+working copy directory.
+
+Run the setup file in the root directory like this::
+
+    python setup.py install
+
+This automatically places the required files in the ``lib/site-packages``
+directory of the Python version you used to run the setup script, may be
+part of a virtualenv or similar.
+
+-----------
+Python Eggs
+-----------
+
+You can build and install eggs with aws-auth-helper using the ``setup_egg.py``
+file provided in the source distribution.
+
+All the usual commands are supported e.g.::
+
+    python setup_egg.py develop
+    python setup_egg.py bdist_egg
+    ...
+
+This requires that you install distribute or setuptools which is not part of
+the Python standard library.
+
+See the following URL for details :-
+
+    - ``distribute`` - http://guide.python-distribute.org/
+
+    - ``setuptools`` (old) - http://peak.telecommunity.com/DevCenter/setuptools
+
+.. warning:: ``setuptools`` is now very long in the tooth and full of bugs! \
+    Just use distribute, or pip instead.
+
+Download and install the latest easy_install script and run the following
+command ::
+
+    easy_install aws-auth-helper
+
+This will go to the Python Package Index and automatically find the 
+appropriate version of aws-auth-helper for your Python setup.
+
+Alternatively, you can use pip instead of easy_install.
+
+Just download the latest version of pip from PyPI found here -
+http://pypi.python.org/pypi/pip and run the following command ::
+
+    pip install aws-auth-helper
+
+-----------
+Final Words
+-----------
+
+Always be sure you verify your downloads against the checksums on the code 
+hosting site's download page!

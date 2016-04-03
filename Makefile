@@ -18,3 +18,10 @@ test-server: clean
 
 clean:
 	rm -rf dist build *.egg-info MANIFEST .tox .eggs
+
+doc:
+	@echo 'building documentation'
+	pip install sphinx
+	pip install --editable .
+	cd docs/ && $(MAKE) -f Makefile clean html
+	cd docs/build/html && zip -r ../awsauthhelper.zip *
