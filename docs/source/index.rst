@@ -1,5 +1,5 @@
 ===================================
-awsauthhelper 1.4.0 documentation
+awsauthhelper 1.4.1 documentation
 ===================================
 
 Helper library providing ArgumentParser and Credentials class for AWS
