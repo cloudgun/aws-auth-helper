@@ -1,7 +1,6 @@
 from setuptools import find_packages, setup
 
-
-__version__ = '1.4.0'
+__version__ = '1.4.1'
 
 setup(
     name='aws-auth-helper',
@@ -10,7 +9,7 @@ setup(
     version=__version__,
     install_requires=['boto3'],
     packages=find_packages(),
-    tests_requires=['unittest2','mock'],
+    tests_requires=['unittest2', 'mock'],
     url='http://aws-auth-helper.readthedocs.org/',
     download_url='https://github.com/drewsonne/awsauthhelper/archive/v.{version}.tar.gz'.format(version=__version__),
     license='GPLv2',
