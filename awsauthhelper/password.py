@@ -12,8 +12,17 @@ NUMBERS = "0123456789"
 def generate(password_policy):
     """
     Builds a password based on the password policy provided
-    :param password_policy iam.AccountPasswordPolicy():
-    :return basestring:
+    ``password_policy`` should be an object with the attributes:
+
+      - **minimum_password_length** *(int)* -- Minimum length of password. Maximum length of password will be the ceiling\
+        of 1.3 times this value.
+      - **require_symbols** *(bool)* -- Make sure password contains ``!@#$%^&*()_+-=[]{}|'``.
+      - **require_lowercase_characters** *(bool)* -- Make sure password contains ``abcdefghijklmnopqrstuvwxyz``.
+      - **require_uppercase_characters** *(bool)* -- Make sure password contains ``ABCDEFGHIJKLMNOPQRSTUVWXYZ``.
+      - **require_numbers** *(bool)* -- Make sure password contains ``0123456789``.
+
+    :param iam.AccountPasswordPolicy password_policy: boto password policy
+    :return basestring: New password
     """
 
     # Generate a password between: the specified min length; and 130% of the min length with a minimum
