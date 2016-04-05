@@ -13,7 +13,7 @@ AWSArgumentParser
   :members:
 
 This class provides a prepackaged set of cli options for AWS authentication.
-    
+
     +-----------------------------+-----------------------------------+-------------------------------------------------------+
     | CLI Option                  | Default                           | Description                                           |
     +=============================+===================================+=======================================================+
@@ -38,7 +38,7 @@ This class provides a prepackaged set of cli options for AWS authentication.
     |                             |                                   | :py:meth:`~awsauthhelper.Credentials.create_session`  |
     |                             |                                   | is called.                                            |
     +-----------------------------+-----------------------------------+-------------------------------------------------------+
-    
+
 The :py:class:`~awsauthhelper.AWSArgumentParser` class takes all the arguments of a :py:class:`argparser.ArgumentParser`
 class in addition to:
 
@@ -50,17 +50,17 @@ class in addition to:
     +---------------------------+-------------------------------------------------------------------------------------------------------------------------+
     | Argument                  | Description                                                                                                             |
     +===========================+=========================================================================================================================+
-    | ``'keys'``                | Both ``--aws-access-key-id`` and ``--aws-secret-access-key`` must be provided by the user.                              |
+    | ``'keys'``                | Both ``aws_access_key_id`` and ``aws_secret_access_key`` must be provided by the user.                              |
     +---------------------------+-------------------------------------------------------------------------------------------------------------------------+
-    | ``'keys_with_session'``   | All of ``--aws-access-key-id``,  ``--aws-secret-access-key``, and ``--aws-session-token`` must be provided by the user. |
+    | ``'keys_with_session'``   | All of ``aws_access_key_id``,  ``aws_secret_access_key``, and ``aws_session_token`` must be provided by the user. |
     +---------------------------+-------------------------------------------------------------------------------------------------------------------------+
-    | ``'profile'``             | Only ``--profile`` must be provided by the user.                                                                        |
+    | ``'profile'``             | Only ``profile`` must be provided by the user.                                                                        |
     +---------------------------+-------------------------------------------------------------------------------------------------------------------------+
-    | ``'profile_role'``        | Both ``--profile``, and ``--role`` must be provided by the user.                                                        |
+    | ``'profile_role'``        | Both ``profile``, and ``role`` must be provided by the user.                                                        |
     +---------------------------+-------------------------------------------------------------------------------------------------------------------------+
-    | ``'config'``              | Only ``--config-path`` must be provided by the user.                                                                    |
+    | ``'config'``              | Only ``config_path`` must be provided by the user.                                                                    |
     +---------------------------+-------------------------------------------------------------------------------------------------------------------------+
-    | ``'credentials'``         | Only ``--credentials-path`` must be provided by the user.                                                               |
+    | ``'credentials'``         | Only ``credentials_path`` must be provided by the user.                                                               |
     +---------------------------+-------------------------------------------------------------------------------------------------------------------------+
 
 
@@ -85,8 +85,8 @@ Credentials
 
 .. autoclass:: awsauthhelper.Credentials
 :members:
-      
-      
+
+
 -------------------
 Password generation
 -------------------
