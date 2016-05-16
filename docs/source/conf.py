@@ -12,6 +12,7 @@
 # serve to show the default.
 
 import sys, os
+import guzzle_sphinx_theme
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -246,3 +247,13 @@ texinfo_documents = [
 #texinfo_show_urls = 'footnote'
 
 autoclass_content = 'both'
+
+html_translator_class = 'guzzle_sphinx_theme.HTMLTranslator'
+html_theme_path = guzzle_sphinx_theme.html_theme_path()
+html_theme = 'guzzle_sphinx_theme'
+extensions.append('guzzle_sphinx_theme')
+
+html_theme_options = {
+    # Set the name of the project to appear in the sidebar
+    "project_nav_name": "AWS Infrastructure",
+}

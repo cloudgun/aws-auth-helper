@@ -14,8 +14,8 @@ def generate(password_policy):
     Builds a password based on the password policy provided
     ``password_policy`` should be an object with the attributes:
 
-      - **minimum_password_length** *(int)* -- Minimum length of password. Maximum length of password will be the ceiling\
-        of 1.3 times this value.
+      - **minimum_password_length** *(int)* -- Minimum length of password. Maximum length of password will be the \
+        ceiling of 1.3 times this value.
       - **require_symbols** *(bool)* -- Make sure password contains ``!@#$%^&*()_+-=[]{}|'``.
       - **require_lowercase_characters** *(bool)* -- Make sure password contains ``abcdefghijklmnopqrstuvwxyz``.
       - **require_uppercase_characters** *(bool)* -- Make sure password contains ``ABCDEFGHIJKLMNOPQRSTUVWXYZ``.
@@ -77,14 +77,15 @@ def generate(password_policy):
         char_num_groups.append(new_group1)
         char_num_groups.append(new_group2)
 
-    def choose_n_chars(n, char):
+    def choose_n_chars(number_of_chars, chars):
         """
         Choose n characters at random from char, and return them
-        :param n int: number of characters to return
-        :param char list[str]: pool of characters to choose from
+        :param int number_of_chars: number of characters to return
+        :param str char: pool of characters to choose from
         :return:
         """
-        return [choice(char) for x in range(n)]
+        # Choose a character from chars number_of_chars times.
+        return [choice(chars) for _ in range(number_of_chars)]
 
     password_composition = []
     shuffle(char_num_groups)

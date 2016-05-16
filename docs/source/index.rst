@@ -1,9 +1,6 @@
-===================================
+=================================
 awsauthhelper 1.4.1 documentation
-===================================
-
-Helper library providing ArgumentParser and Credentials class for AWS
-authentication
+=================================
 
 .. image:: https://www.quantifiedcode.com/api/v1/project/ea5b743486474c47b50734f846586474/badge.svg
   :target: https://www.quantifiedcode.com/app/project/ea5b743486474c47b50734f846586474
@@ -14,8 +11,13 @@ authentication
   :target: https://travis-ci.org/drewsonne/awsauthhelper
 
 
+Helper library providing ArgumentParser and Credentials class for AWS
+authentication
+
+
 .. toctree::
-  :maxdepth: 1
+  :maxdepth: 2
+  :numbered: 3
 
   introduction
   installation
@@ -26,6 +28,3 @@ authentication
 ------------------
 Indices and tables
 ------------------
-
-* :ref:`genindex`
-* :ref:`search`

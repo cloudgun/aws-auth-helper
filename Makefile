@@ -25,3 +25,11 @@ doc:
 	pip install --editable .
 	cd docs/ && $(MAKE) -f Makefile clean html
 	cd docs/build/html && zip -r ../awsauthhelper.zip *
+
+doc-pdf:
+	@echo 'building documentation as latexpdf'
+	pip install sphinx
+	pip install --editable .
+	cd docs/ && $(MAKE) -f Makefile clean latexpdf
+	mkdir -p docs/build/pdf/
+	mv docs/build/latex/*.pdf docs/build/pdf/
