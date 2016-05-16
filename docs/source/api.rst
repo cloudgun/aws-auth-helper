@@ -9,9 +9,6 @@ API Reference
 AWSArgumentParser
 -----------------
 
-.. autoclass:: awsauthhelper.AWSArgumentParser
-  :members:
-
 This class provides a prepackaged set of cli options for AWS authentication.
 
     +-----------------------------+-----------------------------------+-------------------------------------------------------+
@@ -50,17 +47,17 @@ class in addition to:
     +---------------------------+-------------------------------------------------------------------------------------------------------------------------+
     | Argument                  | Description                                                                                                             |
     +===========================+=========================================================================================================================+
-    | ``'keys'``                | Both ``aws_access_key_id`` and ``aws_secret_access_key`` must be provided by the user.                              |
+    | ``keys``                  | Both ``aws_access_key_id`` and ``aws_secret_access_key`` must be provided by the user.                                  |
     +---------------------------+-------------------------------------------------------------------------------------------------------------------------+
-    | ``'keys_with_session'``   | All of ``aws_access_key_id``,  ``aws_secret_access_key``, and ``aws_session_token`` must be provided by the user. |
+    | ``keys_with_session``     | All of ``aws_access_key_id``,  ``aws_secret_access_key``, and ``aws_session_token`` must be provided by the user.       |
     +---------------------------+-------------------------------------------------------------------------------------------------------------------------+
-    | ``'profile'``             | Only ``profile`` must be provided by the user.                                                                        |
+    | ``profile``               | Only ``profile`` must be provided by the user.                                                                          |
     +---------------------------+-------------------------------------------------------------------------------------------------------------------------+
-    | ``'profile_role'``        | Both ``profile``, and ``role`` must be provided by the user.                                                        |
+    | ``profile_role``          | Both ``profile``, and ``role`` must be provided by the user.                                                            |
     +---------------------------+-------------------------------------------------------------------------------------------------------------------------+
-    | ``'config'``              | Only ``config_path`` must be provided by the user.                                                                    |
+    | ``config``                | Only ``config_path`` must be provided by the user.                                                                      |
     +---------------------------+-------------------------------------------------------------------------------------------------------------------------+
-    | ``'credentials'``         | Only ``credentials_path`` must be provided by the user.                                                               |
+    | ``credentials``           | Only ``credentials_path`` must be provided by the user.                                                                 |
     +---------------------------+-------------------------------------------------------------------------------------------------------------------------+
 
 
@@ -70,6 +67,9 @@ argument. The child :py:class:`~argparse.ArgumentParser` appears last in the lis
 so it's best to add *other* :py:class:`~argparse.ArgumentParser` objects to :py:class:`~awsauthhelper.AWSArgumentParser`, rather
 than the reverse.
 
+.. autoclass:: awsauthhelper.AWSArgumentParser
+  :members:
+
 --------------
 validate_creds
 --------------
@@ -78,14 +78,25 @@ Helper function validate your credential combinations
 
 .. autofunction:: awsauthhelper.validate_creds
 
-
 -----------
 Credentials
 -----------
 
-.. autoclass:: awsauthhelper.Credentials
-:members:
+The :py:class:`~awsauthhelper.Credentials` class allows us to encapsulate and hide all the aws auth
+operations, exposing three key methods:
 
+  -  :py:meth:`~awsauthhelper.Credentials.has_role`
+  -  :py:meth:`~awsauthhelper.Credentials.assume_role()`
+  -  :py:meth:`~awsauthhelper.Credentials.create_session()`
+
+The arguments this class takes are the same format as
+``libawsauth.ArgumentParser()``, so the Namespace object returned from
+``argparse.ArgumentPareser.parse_args()`` can be wrapped in
+``vars(...)`` and injected as *kwargs* into the ``Credentials(...)``
+constructor.
+
+.. autoclass:: awsauthhelper.Credentials
+  :members:
 
 -------------------
 Password generation

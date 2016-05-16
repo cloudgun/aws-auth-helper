@@ -125,8 +125,8 @@ class Credentials(object):
         :param str config_path:  Custom path to the aws config file if it is not in a location botocore expects.
         :param str credentials_path: Custom path to the aws credentials file if it is not in a path botocore expects.
         :param bool auth_debug: Whether or not to print debug information. If True,  exit() is throw at create_session()
-        :param dict kwargs: catcher to allow arbitrary **var(my_args.parse_args(...)) to be passed in.\
-            Arguments in **kwargs not used at all.
+        :param dict kwargs: catcher to allow arbitrary ``**var(my_args.parse_args(...))`` to be passed in.\
+            Arguments in ``**kwargs`` not used at all.
         :return awsauthhelper.Credentials:
         """
         self.auth_debug = auth_debug

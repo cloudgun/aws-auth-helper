@@ -36,84 +36,6 @@ and a function:
 
 - ``awsauthhelper.password.generate``
 
-awsauthhelper.ArgumentParser
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-This class provides a prepackaged set of cli options for AWS
-authentication. ``awsauthhelper.ArgumentParser(...)`` takes all the
-arguments of a ``argparser.ArgumentParser(...)`` in addition to:
-
-- *role\_session\_name* is a default value in case ``--role_session_name`` is not provided by the user.
-- *region* is a default value in case ``--region`` is not provided by the user.
-- *profile* is a default value in case ``--profile`` is not provided by the user.
-- *enforce_auth_type* enforces the type of arguments which can be passed to this utility. Can be one of:
-
-  - ``'keys'``
-  - ``'keys_with_session'``
-  - ``'profile'``
-  - ``'profile_role'``
-  - ``'config'``
-  - ``'credentials'``
-
-
-Like its superclass, ``awsauthhelper.ArgumentParser(...)`` allows
-chaining/inclusion of multiple ``ArgumentParsers`` through the
-``list[argparseArgumentParser]: parents`` constructor argument. The
-child ArgumentParser appears last in the list of options when ``--help``
-is called, so it's best to add *other* ArgumentParsers to
-awsauthhelper's ArgumentParser, rather than the reverse. For example,
-
-::
-
-    >>> import argparse
-    >>> import awsauthhelper
-
-    >>> my_aws_app = argparse.ArgumentParser(
-    ...     description='Lists EC2 instances'
-    ... )
-    >>> my_aws_app.add_argument('--max-instances', type=int, required=True)
-
-    >>> aws_options = awsauthhelper.AWSArgumentParser(role_session_name='my_app', region='eu-central-1', parents=[my_aws_app])
-    >>> aws_options.print_help()
-
-    usage:  [-h] --max-instances MAX_INSTANCES
-        [--aws-access-key-id AWS_ACCESS_KEY_ID]
-        [--aws-secret-access-key AWS_SECRET_ACCESS_KEY]
-        [--aws-session-token AWS_SESSION_TOKEN] [--region REGION]
-        [--profile PROFILE] [--role ROLE] [--config-path CONFIG_PATH]
-        [--credentials-path CREDENTIALS_PATH] [--auth-debug]
-        [--role-session-name ROLE_SESSION_NAME]
-
-    optional arguments:
-      -h, --help            show this help message and exit
-      --max-instances MAX_INSTANCES
-
-    AWS credentials:
-      --aws-access-key-id AWS_ACCESS_KEY_ID
-                            AWS access key
-      --aws-secret-access-key AWS_SECRET_ACCESS_KEY
-                            Access and secret key variables override credentials
-                            stored in credential and config files
-      --aws-session-token AWS_SESSION_TOKEN
-                            A session token is only required if you are using
-                            temporary security credentials.
-      --region REGION       This variable overrides the default region of the in-
-                            use profile, if set.
-      --profile PROFILE     This can be the name of a profile stored in a
-                            credential or config file, or default to use the
-                            default profile.
-      --role ROLE           Fully qualified role arn to assume
-      --config-path CONFIG_PATH
-                            Specify a custom location for ~/.aws/config
-      --credentials-path CREDENTIALS_PATH
-                            Specify a custom location for ~/.aws/credentials
-      --auth-debug          Enter debug mode, which will print credentials and
-                            then exist at `create_session`.
-      --role-session-name ROLE_SESSION_NAME
-                            If you have assigned a role, set a --role-session-name
-
-*Note* that the AWS options appeared after our application options.
-
 Environment Variables
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -144,16 +66,7 @@ awsauthhelper.Credentials
 
 The Credentials class allows us to encapsulate and hide all the aws auth
 operations, exposing three key methods:
-
--  ``has_role()``
--  ``assume_role()``
--  ``create_session()``
-
-The arguments this class takes are the same format as
-``libawsauth.ArgumentParser()``, so the Namespace object returned from
-``argparse.ArgumentPareser.parse_args()`` can be wrapped in
-``vars(...)`` and injected as *kwargs* into the ``Credentials(...)``
-constructor. Following from the previous example:
+ Following from the previous example:
 
 ::
 
