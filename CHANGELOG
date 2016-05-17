@@ -1,7 +1,14 @@
 ---------------
-Release: 1.4.0
+Release: 1.5.0
 ---------------
-Date: 4 Sep 2015
+Date: 17 May 2016
+
+~~~~~~~~~~~~~~~~~~~
+Changes since 1.4.1
+~~~~~~~~~~~~~~~~~~~
+
+* Added filtering for cli options. Specific types of authentication cli options can be turned on and off using
+    AWSArgumentParser(..., enforce_auth_type=None, ...).
 
 ^^^^^^^^^^^^^^^^^^^^
 Changes since 1.3.3
@@ -11,9 +18,7 @@ Changes since 1.3.3
 * Added more test cases
 * Changed default, profile, region, and role_session name parameter names in awsauthhelper.Credentials.__init__
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Specific bug fixes addressed in this release
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+**Specific bug fixes addressed in this release**
 
 FIXED 10: https://github.com/drewsonne/aws-auth-helper/issues/10
     - __init__.py - Bad key

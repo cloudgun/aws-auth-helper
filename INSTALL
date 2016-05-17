@@ -11,7 +11,7 @@ available in the source tarball.
 Locating the software
 ---------------------
 
-aws-auth-helper is available directly from the public subversion source code 
+aws-auth-helper is available directly from the public git source code
 repository.
 
 Details on how to check out the source code can be found here :
@@ -68,7 +68,7 @@ command ::
 
     easy_install aws-auth-helper
 
-This will go to the Python Package Index and automatically find the 
+This will go to the Python Package Index and automatically find the
 appropriate version of aws-auth-helper for your Python setup.
 
 Alternatively, you can use pip instead of easy_install.
@@ -82,5 +82,5 @@ http://pypi.python.org/pypi/pip and run the following command ::
 Final Words
 -----------
 
-Always be sure you verify your downloads against the checksums on the code 
+Always be sure you verify your downloads against the checksums on the code
 hosting site's download page!

@@ -42,13 +42,31 @@ class TestCredentials(TestCase):
         })
 
     def test_freeze(self):
-        creds = Credentials()
+        creds = Credentials(
+            region='test_region',
+            aws_secret_access_key='test_key',
+            aws_access_key_id='test_id'
+        )
+
+        self.assertEqual(creds.region, 'test_region')
+        self.assertEqual(creds.aws_secret_access_key, 'test_key')
+        self.assertEqual(creds.aws_access_key_id, 'test_id')
+
+        self.assertDictEqual(creds._freeze, {})
+
         creds.freeze()
-        self.assertDictEqual(creds._freeze, {
-            'aws_access_key_id': None,
-            'aws_secret_access_key': None,
-            'aws_session_token': None,
-            'profile': None,
-            'region': None,
-            'role': None
-        })
+        creds.profile = 'my_test_profile'
+        creds.role = 'my_test_role'
+
+        self.assertEqual(creds.profile, 'my_test_profile')
+        self.assertEqual(creds.role, 'my_test_role')
+
+        self.assertEqual(creds._freeze['region'], 'test_region')
+        self.assertEqual(creds._freeze['aws_secret_access_key'], 'test_key')
+        self.assertEqual(creds._freeze['aws_access_key_id'], 'test_id')
+
+        creds.reset()
+
+        self.assertEqual(creds.region, 'test_region')
+        self.assertEqual(creds.aws_secret_access_key, 'test_key')
+        self.assertEqual(creds.aws_access_key_id, 'test_id')
