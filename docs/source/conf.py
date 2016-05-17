@@ -250,5 +250,4 @@ autoclass_content = 'both'
 
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 html_theme = 'sphinx_rtd_theme'
-extensions.append('guzzle_sphinx_theme')
 
