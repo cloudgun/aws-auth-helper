@@ -4,17 +4,6 @@ Introduction
 
 A Python library for simplifying authentication to Amazon Web Services APIs.
 
-Provides support for:
-
-Authentication:
-
-- one
-- two
-
-Password generation
-
-- one
-
 Changes
 -------
 
@@ -43,8 +32,7 @@ Documentation
 This library has comprehensive docstrings and a full set of project
 documentation (including tutorials):
 
-- http://pythonhosted.org/aws-auth-helper/
-- http://readthedocs.org/docs/aws-auth-helper/en/latest/
+- http://aws-auth-helper.readthedocs.io/en/latest/
 
 Finally...
 ----------

@@ -10,10 +10,8 @@ awsauthhelper 1.4.1 documentation
 .. image:: https://travis-ci.org/drewsonne/awsauthhelper.svg?branch=master
   :target: https://travis-ci.org/drewsonne/awsauthhelper
 
-
 Helper library providing ArgumentParser and Credentials class for AWS
 authentication
-
 
 .. toctree::
   :maxdepth: 2
