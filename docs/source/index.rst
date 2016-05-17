@@ -1,5 +1,5 @@
 =================================
-awsauthhelper 1.4.1 documentation
+awsauthhelper 1.5.0 documentation
 =================================
 
 .. image:: https://www.quantifiedcode.com/api/v1/project/ea5b743486474c47b50734f846586474/badge.svg

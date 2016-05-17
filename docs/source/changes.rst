@@ -1,5 +1,5 @@
 ===================================
-What's new in aws-auth-helper 1.4.1
+What's new in aws-auth-helper 1.5.0
 ===================================
 
 .. include:: ../../CHANGELOG
