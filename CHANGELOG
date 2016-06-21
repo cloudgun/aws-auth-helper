@@ -1,4 +1,15 @@
 ---------------
+Release: 1.5.1
+---------------
+Date: 21 June 2016
+
+~~~~~~~~~~~~~~~~~~~
+Changes since 1.5.0
+~~~~~~~~~~~~~~~~~~~
+
+* Fixed a bug where the previous 'README.rst' was not found by setup.py, causing travis build to fail.
+
+---------------
 Release: 1.5.0
 ---------------
 Date: 17 May 2016
