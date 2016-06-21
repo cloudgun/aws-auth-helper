@@ -22,7 +22,7 @@ clean:
 
 doc:
 	@echo 'building documentation'
-	pip install sphinx
+	pip install sphinx sphinx_rtd_theme
 	pip install --editable .
 	cd docs/ && $(MAKE) -f Makefile clean html
 	cd docs/build/html && zip -r ../awsauthhelper.zip *
