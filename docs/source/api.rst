@@ -92,6 +92,27 @@ The arguments this class takes are the same format as
 ``vars(...)`` and injected as *kwargs* into the ``Credentials(...)``
 constructor.
 
+::
+
+    >>> configs = aws_options.parse_args()
+    >>> credentials = awsauthhelper.Credentials(
+    ...   **vars(configs)
+    ... )
+
+    >>> if credentials.has_role():
+    >>>     credentials.assume_role()
+    >>> boto3_session = credentials.create_session()
+
+    >>> s3 = boto3_session().resource('s3')
+    >>> for bucket in s3.buckets.all():
+    >>>    print(bucket.name)
+
+    >>> for region in regions:
+    >>>    # The session object can be 're-authorised' across regions.
+    >>>    print(
+    ...       boto3_session(region=region['RegionName']).client('ec2').describe_instances()
+    ...    )
+
 .. autoclass:: awsauthhelper.Credentials
   :members:
 
