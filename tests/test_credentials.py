@@ -41,6 +41,11 @@ class TestCredentials(TestCase):
             'aws_session_token': 'my_token'
         })
 
+        creds = Credentials(profile='my_profile')
+        self.assertDictEqual(creds._build_kwargs(), {
+            'profile_name': 'my_profile'
+        })
+
     def test_freeze(self):
         creds = Credentials(
             region='test_region',
