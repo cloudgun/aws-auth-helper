@@ -347,12 +347,20 @@ class Credentials(object):
 
         :return Dict[str, str]:
         """
-        keys = {
-            'aws_access_key_id': self.aws_access_key_id,
-            'aws_secret_access_key': self.aws_secret_access_key
-        }
+        keys = {}
+
+        if self.aws_access_key_id is not None:
+            keys['aws_access_key_id'] = self.aws_access_key_id
+
+        if self.aws_secret_access_key is not None:
+            keys['aws_secret_access_key'] = self.aws_secret_access_key
+
+        if self.profile is not None:
+            keys['profile_name'] = self.profile
+
         if self.has_session_keys():
             keys['aws_session_token'] = self.aws_session_token
+
         return keys
 
     def has_keys(self):
