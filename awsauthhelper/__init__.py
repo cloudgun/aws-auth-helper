@@ -358,6 +358,9 @@ class Credentials(object):
         if self.profile is not None:
             keys['profile_name'] = self.profile
 
+        if self.region is not None:
+            keys['region_name'] = self.region
+
         if self.has_session_keys():
             keys['aws_session_token'] = self.aws_session_token
 
