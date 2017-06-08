@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-__version__ = '1.5.4'
+__version__ = '1.5.5'
 
 setup(
     name='aws-auth-helper',

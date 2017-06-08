@@ -46,6 +46,18 @@ class TestCredentials(TestCase):
             'profile_name': 'my_profile'
         })
 
+        creds = Credentials(region='my_region')
+        self.assertDictEqual(creds._build_kwargs(),{
+            'region_name': 'my_region'
+        })
+
+        creds = Credentials(region='my_region',aws_secret_access_key='my_key', aws_access_key_id='my_id')
+        self.assertDictEqual(creds._build_kwargs(), {
+            'region_name': 'my_region',
+            'aws_secret_access_key': 'my_key',
+            'aws_access_key_id': 'my_id'
+        })
+
     def test_freeze(self):
         creds = Credentials(
             region='test_region',
