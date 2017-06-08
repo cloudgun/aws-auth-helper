@@ -1,4 +1,15 @@
 ---------------
+Release: 1.5.5
+---------------
+Date: 7 June 2017
+
+~~~~~~~~~~~~~~~~~~~
+Changes since 1.5.4
+~~~~~~~~~~~~~~~~~~~
+
+* Fixed a bug where region were not being exported when using the global session
+
+---------------
 Release: 1.5.4
 ---------------
 Date: 7 June 2017
