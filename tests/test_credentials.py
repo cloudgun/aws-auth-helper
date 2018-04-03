@@ -97,3 +97,17 @@ class TestCredentials(TestCase):
 
         credentials.mfa_serial = "mock_serial"
         self.assertTrue(credentials.has_mfa())
+
+    def test__switch_auth_scope(self):
+        credentials = Credentials()
+        credentials._switch_auth_scope({
+            'Credentials': {
+                'AccessKeyId': 'mock_key_id',
+                'SecretAccessKey': 'mock_secret_key',
+                'SessionToken': 'mock_session_token'
+            }
+        })
+
+        self.assertEqual(credentials.aws_access_key_id, 'mock_key_id')
+        self.assertEqual(credentials.aws_secret_access_key, 'mock_secret_key')
+        self.assertEqual(credentials.aws_session_token, 'mock_session_token')
