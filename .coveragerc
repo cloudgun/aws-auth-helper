@@ -1,0 +1,8 @@
+[paths]
+source =
+    awsauthhelper/*.py
+
+[run]
+omit =
+    */tests/*
+    docs
