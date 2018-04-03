@@ -69,5 +69,6 @@ Full documentation can be found at `aws-auth-helper.readthedocs.org`_.
         'Topic :: Software Development :: Libraries',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: System :: Systems Administration :: Authentication/Directory'
-    ]
+    ],
+    tests_require=['coverage', 'nose', 'nose-cover3', 'sphinx']
 )
