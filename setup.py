@@ -35,19 +35,24 @@ Full documentation can be found at `aws-auth-helper.readthedocs.org`_.
    :target: https://travis-ci.org/drewsonne/awsauthhelper
 
 """,
-    description='Helper library providing ArgumentParser and Credentials class for AWS authentication',
+    description='Helper library providing ArgumentParser and Credentials '
+                'class for AWS authentication',
     version=__version__,
-    install_requires=['boto3'],
     packages=find_packages(),
     # tests_requires=['unittest2', 'mock'],
     url='http://aws-auth-helper.readthedocs.org/',
-    download_url='https://github.com/drewsonne/awsauthhelper/archive/v.{version}.tar.gz'.format(version=__version__),
-    entry_points = {
+    download_url=(
+            'https://github.com/drewsonne/awsauthhelper/archive/v.' +
+            __version__ +
+            '.tar.gz'
+    ),
+    entry_points={
         'console_scripts': [
             'awsauthhelper=awsauthhelper.command_line:main',
             'aws-auth-helper=awsauthhelper.command_line:main'
         ]
     },
+    install_requires=['boto3'],
     license='GPLv2',
     test_suite='tests',
     author='Drew J. Sonne',
