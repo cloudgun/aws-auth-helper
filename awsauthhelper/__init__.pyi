@@ -1,17 +1,19 @@
-import boto3
-import typing
 import argparse
+import typing
+
+import boto3
+
 import awsauthhelper
 
 
 class AWSArgumentParser(argparse.ArgumentParser):
     def __init__(
-            self,
-            role_session_name: str,
-            region: str = None,
-            profile: str = None,
-            enforce_auth_type: str = None,
-            **kwargs: typing.Dict[str, typing.Union[str, int, bool]]
+        self,
+        role_session_name: str,
+        region: str = None,
+        profile: str = None,
+        enforce_auth_type: str = None,
+        **kwargs: typing.Dict[str, typing.Union[str, int, bool]]
     ) -> None: ...
 
 
@@ -20,19 +22,19 @@ class Credentials(object):
     default = ...  # type: Credentials
 
     def __init__(
-            self,
-            region=None,
-            aws_secret_access_key=None,
-            aws_access_key_id=None,
-            aws_session_token=None,
-            profile=None,
-            role=None,
-            role_session_name=None,
-            config_path=None,
-            credentials_path=None,
-            auth_debug=False,
-            **kwargs: typing.Dict[str, typing.Union[str, int, bool]]
-    ) -> None: 
+        self,
+        region=None,
+        aws_secret_access_key=None,
+        aws_access_key_id=None,
+        aws_session_token=None,
+        profile=None,
+        role=None,
+        role_session_name=None,
+        config_path=None,
+        credentials_path=None,
+        auth_debug=False,
+        **kwargs: typing.Dict[str, typing.Union[str, int, bool]]
+    ) -> None:
         self.role = None
         self.role_session_name = None
         self._freeze = None
@@ -53,6 +55,8 @@ class Credentials(object):
 
     def create_session(self, internal=False) -> typing.Callable[[str], boto3.Session]: ...
 
+    def get_session_generator(self, internal=False) -> typing.Callable[typing.Optional[str], boto3.Session]: ...
+
     def _assume_role(self) -> awsauthhelper.Credentials: ...
 
     def _switch_auth_scope(self, credentials) -> awsauthhelper.Credentials: ...
@@ -68,10 +72,10 @@ class Credentials(object):
     def using_role(self) -> bool: ...
 
 
-def validate_creds(
-        aws_access_key_id: str,
-        aws_secret_access_key: str,
-        aws_session_token: str,
-        profile: str,
-        **kwargs: typing.Dict[str, typing.Union[str, int, bool]]
+def validate_credentials(
+    aws_access_key_id: str,
+    aws_secret_access_key: str,
+    aws_session_token: str,
+    profile: str,
+    **kwargs: typing.Dict[str, typing.Union[str, int, bool]]
 ) -> bool: ...

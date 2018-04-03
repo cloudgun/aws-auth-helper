@@ -47,11 +47,11 @@ class TestCredentials(TestCase):
         })
 
         creds = Credentials(region='my_region')
-        self.assertDictEqual(creds._build_kwargs(),{
+        self.assertDictEqual(creds._build_kwargs(), {
             'region_name': 'my_region'
         })
 
-        creds = Credentials(region='my_region',aws_secret_access_key='my_key', aws_access_key_id='my_id')
+        creds = Credentials(region='my_region', aws_secret_access_key='my_key', aws_access_key_id='my_id')
         self.assertDictEqual(creds._build_kwargs(), {
             'region_name': 'my_region',
             'aws_secret_access_key': 'my_key',

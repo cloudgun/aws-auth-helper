@@ -1,5 +1,5 @@
-from random import randrange, choice, shuffle, random, sample
-from math import floor, ceil
+from math import ceil
+from random import choice, random, randrange, sample, shuffle
 
 __author__ = 'Drew J. Sonne <drew.sonne@gmail.com>'
 

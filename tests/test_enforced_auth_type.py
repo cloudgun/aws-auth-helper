@@ -39,7 +39,7 @@ class TestEnforcedAuthType(TestCase):
         self.assertEqual(len(key_arg), 1)
 
         role_key = filter(lambda action: '--role' in action.option_strings, arg_parser._actions)
-        self.assertEqual(len(key_arg), 1)
+        self.assertEqual(len(role_key), 1)
 
     def test_auth_enforcement_config(self):
         arg_parser = AWSArgumentParser(role_session_name='test', enforce_auth_type='config')
