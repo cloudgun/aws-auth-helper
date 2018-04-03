@@ -49,7 +49,7 @@ class AWSArgumentParser(argparse.ArgumentParser):
         if (not enforce_auth) or (auth_uses_keys or auth_uses_keys_with_session):
             aws_group.add_argument(
                 '--aws-access-key-id', help='AWS access key',
-                action=EnvDefault, envvar='AWS_ACCESS_KEY_ID',
+                action=EnvDefault, variable_name='AWS_ACCESS_KEY_ID',
                 required=(auth_uses_keys or auth_uses_keys_with_session)
             )
 
@@ -58,7 +58,7 @@ class AWSArgumentParser(argparse.ArgumentParser):
                 '--aws-secret-access-key',
                 help=('Access and secret key variables override credentials '
                       'stored in credential and config files'),
-                action=EnvDefault, envvar='AWS_SECRET_ACCESS_KEY',
+                action=EnvDefault, variable_name='AWS_SECRET_ACCESS_KEY',
                 required=(auth_uses_keys or auth_uses_keys_with_session)
             )
 
@@ -67,7 +67,7 @@ class AWSArgumentParser(argparse.ArgumentParser):
                 '--aws-session-token',
                 help='A session token is only required if you are using '
                      'temporary security credentials.',
-                action=EnvDefault, envvar='AWS_SESSION_TOKEN',
+                action=EnvDefault, variable_name='AWS_SESSION_TOKEN',
                 required=auth_uses_keys_with_session
             )
 
@@ -77,7 +77,7 @@ class AWSArgumentParser(argparse.ArgumentParser):
                 help='This can be the name of a profile stored in a '
                      'credential or config file, or default to use the '
                      'default profile.',
-                action=EnvDefault, envvar='AWS_DEFAULT_PROFILE',
+                action=EnvDefault, variable_name='AWS_DEFAULT_PROFILE',
                 default=profile,
                 required=(auth_uses_profile or auth_uses_profile_role)
             )
@@ -92,7 +92,7 @@ class AWSArgumentParser(argparse.ArgumentParser):
             aws_group.add_argument(
                 '--config-path',
                 help='Specify a custom location for ~/.aws/config',
-                action=EnvDefault, envvar='AWS_CONFIG_FILE',
+                action=EnvDefault, variable_name='AWS_CONFIG_FILE',
                 required=auth_uses_config_file
             )
 
@@ -100,7 +100,7 @@ class AWSArgumentParser(argparse.ArgumentParser):
             aws_group.add_argument(
                 '--credentials-path',
                 help='Specify a custom location for ~/.aws/credentials',
-                action=EnvDefault, envvar='AWS_SHARED_CREDENTIALS_FILE',
+                action=EnvDefault, variable_name='AWS_SHARED_CREDENTIALS_FILE',
                 required=auth_uses_credentials_file
             )
 
@@ -114,8 +114,14 @@ class AWSArgumentParser(argparse.ArgumentParser):
         aws_group.add_argument(
             '--region',
             help='This variable overrides the default region of the in-use profile, if set.',
-            action=EnvDefault, envvar='AWS_DEFAULT_REGION',
+            action=EnvDefault, variable_name='AWS_DEFAULT_REGION',
             default=region, required=False
+        )
+
+        aws_group.add_argument(
+            '--mfa-serial',
+            help='MFA Device Serial ID',
+            default=None, required=False,
         )
 
         # We can optionally have a default role session name.

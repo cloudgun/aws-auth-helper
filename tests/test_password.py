@@ -29,42 +29,42 @@ class TestPassword(AuthHelperTestCase):
         # Test default
         new_password = generate(self.MockPasswordPolicy())
         self.assertGreaterEqual(len(new_password), 6)
-        self.assertIsInstance(new_password, basestring)
+        self.assertIsInstance(new_password, str)
 
         # Test override
         new_password = generate(self.MockPasswordPolicy(
             minimum_password_length=10
         ))
         self.assertGreaterEqual(len(new_password), 10)
-        self.assertIsInstance(new_password, basestring)
+        self.assertIsInstance(new_password, str)
 
     def test_generate_symbols(self):
         new_password = generate(self.MockPasswordPolicy(
             require_symbols=True
         ))
         self.assertAnyIn(self.SYMBOLS, new_password)
-        self.assertIsInstance(new_password, basestring)
+        self.assertIsInstance(new_password, str)
 
     def test_generate_lowercase(self):
         new_password = generate(self.MockPasswordPolicy(
             require_lowercase_characters=True
         ))
         self.assertAnyIn(self.LOWERCASE, new_password)
-        self.assertIsInstance(new_password, basestring)
+        self.assertIsInstance(new_password, str)
 
     def test_generate_uppercase(self):
         new_password = generate(self.MockPasswordPolicy(
             require_uppercase_characters=True
         ))
         self.assertAnyIn(self.UPPERCASE, new_password)
-        self.assertIsInstance(new_password, basestring)
+        self.assertIsInstance(new_password, str)
 
     def test_generate_numbers(self):
         new_password = generate(self.MockPasswordPolicy(
             require_numbers=True
         ))
         self.assertAnyIn(self.NUMBERS, new_password)
-        self.assertIsInstance(new_password, basestring)
+        self.assertIsInstance(new_password, str)
 
     def test_generate_secure(self):
         new_password = generate(self.MockPasswordPolicy(
@@ -79,4 +79,4 @@ class TestPassword(AuthHelperTestCase):
         self.assertAnyIn(self.LOWERCASE, new_password)
         self.assertAnyIn(self.UPPERCASE, new_password)
         self.assertAnyIn(self.NUMBERS, new_password)
-        self.assertIsInstance(new_password, basestring)
+        self.assertIsInstance(new_password, str)
