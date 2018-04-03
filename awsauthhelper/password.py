@@ -1,7 +1,7 @@
 from random import randrange, choice, shuffle, random, sample
 from math import floor, ceil
 
-__author__ = 'drews'
+__author__ = 'Drew J. Sonne <drew.sonne@gmail.com>'
 
 SYMBOLS = "!@#$%^&*()_+-=[]{}|'"
 LOWERCASE = "abcdefghijklmnopqrstuvwxyz"

@@ -2,7 +2,7 @@ from argparse import Namespace
 from awsauthhelper.password import generate
 from tests import AuthHelperTestCase
 
-__author__ = 'drews'
+__author__ = 'Drew J. Sonne <drew.sonne@gmail.com>'
 
 
 class TestPassword(AuthHelperTestCase):

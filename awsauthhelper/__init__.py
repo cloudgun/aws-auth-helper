@@ -7,7 +7,7 @@ from builtins import input
 import boto3
 from boto3 import Session
 
-__author__ = 'drews'
+__author__ = 'Drew J. Sonne <drew.sonne@gmail.com>'
 
 
 class AWSArgumentParser(argparse.ArgumentParser):
@@ -564,8 +564,8 @@ class Credentials(object):
         boto3.setup_default_session(**self._build_kwargs())
 
 
-def validate_creds(aws_access_key_id=None, aws_secret_access_key=None,
-                   aws_session_token=None, profile=None, **kwargs):
+def validate_credentials(aws_access_key_id=None, aws_secret_access_key=None,
+                         aws_session_token=None, profile=None, **kwargs):
     """
     Perform validation on CLI options
 
