@@ -1,4 +1,5 @@
 from unittest import TestCase
+from unittest.mock import MagicMock
 
 from awsauthhelper import Credentials
 
@@ -111,3 +112,33 @@ class TestCredentials(TestCase):
         self.assertEqual(credentials.aws_access_key_id, 'mock_key_id')
         self.assertEqual(credentials.aws_secret_access_key, 'mock_secret_key')
         self.assertEqual(credentials.aws_session_token, 'mock_session_token')
+
+    def test_assume_role(self):
+        credentials = Credentials()
+
+        credentials.using_role = MagicMock(return_value=True)
+        credentials._assume_role = MagicMock()
+
+        credentials.assume_role()
+
+        credentials.using_role.assert_called_once_with()
+        credentials._assume_role.assert_called_once_with()
+
+    def test_assume_role_fail(self):
+        credentials = Credentials()
+
+        credentials.using_role = MagicMock(return_value=False)
+        credentials._assume_role = MagicMock()
+
+        with self.assertRaises(ValueError):
+            credentials.assume_role()
+
+        credentials.using_role.assert_called_once_with()
+        credentials._assume_role.assert_not_called()
+
+    def test_get_session_generator(self):
+        credentials = Credentials()
+
+        generate_session = credentials.get_session_generator()
+
+        self.assertTrue(callable(generate_session))
