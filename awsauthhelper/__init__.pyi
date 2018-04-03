@@ -32,7 +32,18 @@ class Credentials(object):
             credentials_path=None,
             auth_debug=False,
             **kwargs: typing.Dict[str, typing.Union[str, int, bool]]
-    ) -> None: ...
+    ) -> None: 
+        self.role = None
+        self.role_session_name = None
+        self._freeze = None
+        self.auth_debug = None
+        self.region = None
+        self.profile = None
+        self.logger = None
+        self.aws_session_token = None
+        self.aws_secret_access_key = None
+        self.aws_access_key_id = None
+        ...
 
     def assume_role(self) -> awsauthhelper.Credentials: ...
 
@@ -43,6 +54,8 @@ class Credentials(object):
     def create_session(self, internal=False) -> typing.Callable[[str], boto3.Session]: ...
 
     def _assume_role(self) -> awsauthhelper.Credentials: ...
+
+    def _switch_auth_scope(self, credentials) -> awsauthhelper.Credentials: ...
 
     def has_keys(self) -> bool: ...
 

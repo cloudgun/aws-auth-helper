@@ -14,11 +14,20 @@ Release: 1.5.4
 ---------------
 Date: 7 June 2017
 
+* Fixed a bug where profiles were not being exported when using the global session
+
+--------------
+Release: 1.5.2
+--------------
+Date: 7 March 2017
+
 ~~~~~~~~~~~~~~~~~~~
 Changes since 1.5.1
 ~~~~~~~~~~~~~~~~~~~
 
-* Fixed a bug where profiles were not being exported when using the global session
+* Added MFA functionality to awsauthhelper.Credentials. Special thanks to [Ahmed](https://github.com/Ashex) for testing!
+* Added `aws-auth-helper` cli utility to provide an interface to test the library.
+* Added `--shell-init` to `aws-auth-helper` to allow shell initialisation of AWS environment variables.
 
 ---------------
 Release: 1.5.1

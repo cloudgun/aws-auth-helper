@@ -42,6 +42,12 @@ Full documentation can be found at `aws-auth-helper.readthedocs.org`_.
     # tests_requires=['unittest2', 'mock'],
     url='http://aws-auth-helper.readthedocs.org/',
     download_url='https://github.com/drewsonne/awsauthhelper/archive/v.{version}.tar.gz'.format(version=__version__),
+    entry_points = {
+        'console_scripts': [
+            'awsauthhelper=awsauthhelper.command_line:main',
+            'aws-auth-helper=awsauthhelper.command_line:main'
+        ]
+    },
     license='GPLv2',
     test_suite='tests',
     author='Drew J. Sonne',

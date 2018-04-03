@@ -2,6 +2,9 @@ language: python
 python:
   - "2.7"
   - "3.4"
+  - "3.5"
+  - "3.6"
+  - "3.7-dev"
 before_install:
   - pip install codecov
 install:
@@ -9,6 +12,6 @@ install:
 script: nosetests --with-coverage
 matrix:
   allow_failures:
-    - python: "3.4"
+    - python: 3.7-dev
 after_success:
   - codecov

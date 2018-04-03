@@ -55,8 +55,15 @@ class TestEnforcedAuthType(TestCase):
         key_arg = filter(lambda action: '--credentials-path' in action.option_strings, arg_parser._actions)
         self.assertEqual(len(key_arg), 1)
 
+    def test_auth_enforcement_mfa(self):
+        arg_parser = AWSArgumentParser(role_session_name='test', enforce_auth_type='mfa')
+        self.assertEqual(len(arg_parser._actions), 4)
+
+        key_arg = filter(lambda action: '--mfa-serial' in action.option_strings, arg_parser._actions)
+        self.assertEqual(len(key_arg), 1)
+
     def test_auth_enforcement_none(self):
         self.assertEqual(
             len(AWSArgumentParser(role_session_name='test')._actions),
-            10
+            11
         )

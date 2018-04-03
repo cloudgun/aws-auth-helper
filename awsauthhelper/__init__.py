@@ -1,4 +1,6 @@
 import os
+import warnings
+
 import boto3
 import logging
 import argparse
@@ -90,10 +92,10 @@ class AWSArgumentParser(argparse.ArgumentParser):
             )
 
         aws_group.add_argument(
-            '--auth-debug', help='Enter debug mode, which will print credentials and  exist at `create_session`.',
+            '--auth-debug', help='Enter debug mode, which will print credentials and exit at `create_session`.',
             action='store_true', default=False
         )
-        
+
         aws_group.add_argument(
             '--region', help='This variable overrides the default region of the in-use profile, if set.',
             action=EnvDefault, envvar='AWS_DEFAULT_REGION',
@@ -142,12 +144,21 @@ class Credentials(object):
     """
     Encapsulates processing of AWS credentials.
     """
-    freeze_properties = ['region', 'aws_secret_access_key', 'aws_access_key_id', 'aws_session_token', 'profile', 'role']
+    freeze_properties = [
+        'region',
+        'aws_secret_access_key',
+        'aws_access_key_id',
+        'aws_session_token',
+        'profile',
+        'role',
+        'mfa_serial'
+    ]
     default = None
+
 
     def __init__(self, region=None, aws_secret_access_key=None, aws_access_key_id=None, aws_session_token=None,
                  profile=None, role=None, role_session_name=None, config_path=None, credentials_path=None,
-                 auth_debug=False, **kwargs):
+                 mfa_serial=None, mfa_session_life=900, mfa_token=None, force_mfa=False, auth_debug=False, **kwargs):
         """
         Handle the assumption of roles, and creation of Session objects.
 
@@ -161,11 +172,15 @@ class Credentials(object):
         :param str role_session_name: Custom name of the role session to override the default.
         :param str config_path:  Custom path to the aws config file if it is not in a location botocore expects.
         :param str credentials_path: Custom path to the aws credentials file if it is not in a path botocore expects.
-        :param bool auth_debug: Whether or not to print debug information. If True,  exit() is throw at create_session()
+        :param str mfa_serial: Identification number of the MFA device. If you set this argument, your  will be prompted for your MFA token.
+        :param str mfa_session_life: The duration, in seconds, that the mfa credentials should remain valid.
+        :param str mfa_token: MFA token to authentication to AWS with.
+        :param bool auth_debug: Whether or not to print debug information. If True, exit() is throw at create_session()
         :param dict kwargs: catcher to allow arbitrary ``**var(my_args.parse_args(...))`` to be passed in.\
             Arguments in ``**kwargs`` not used at all.
         :return awsauthhelper.Credentials:
         """
+
         self.auth_debug = auth_debug
 
         if self.auth_debug:
@@ -193,6 +208,14 @@ class Credentials(object):
         self.role_session_name = role_session_name
         self.logger.debug('__init__(): self.role_session_name={value}'.format(value=role_session_name))
 
+        self.mfa_serial = mfa_serial
+        self.logger.debug('__init__(): self.mfa_serial={value}'.format(value=mfa_serial))
+        self.mfa_session_life = mfa_session_life
+        self.logger.debug('__init__(): self.mfa_session_life={value}'.format(value=mfa_session_life))
+        self.mfa_token = mfa_token
+        self.logger.debug('__init__(): self.mfa_token={value}'.format(value=mfa_token))
+        self._is_mfa_authenticated = False
+
         self.credentials_path = credentials_path
         self.logger.debug('__init__(): self.credentials_path={value}'.format(value=credentials_path))
         # Tell boto that we have a custom credentials location
@@ -214,6 +237,9 @@ class Credentials(object):
         # Vars to store original creds, incase we assume a role
         self._freeze = {}
 
+        self.force_mfa = force_mfa
+        self.logger.debug('__init__(): self.force_mfa={value}'.format(value=force_mfa))
+
         if Credentials.default is None:
             Credentials.default = self
 
@@ -230,6 +256,20 @@ class Credentials(object):
         else:
             self.logger.debug('assume_role(): self.using_role()=False')
             raise ValueError("Could not find keys or profile")
+        return self
+
+    def assume_temp_session(self):
+        """
+        Retrieve some temporary credentials from AWS
+
+        :return awsauthhelper.Credentials: Allow chaining.
+        """
+        session = self.create_session(internal=True)
+        response = session().client('sts').get_session_token(
+            DurationSeconds=self.mfa_session_life
+        )
+        self._switch_auth_scope(response)
+
         return self
 
     def freeze(self):
@@ -259,9 +299,18 @@ class Credentials(object):
 
     def create_session(self, internal=False):
         """
-        Return a function to generate our session with local vars as a closure.
+        DEPRECATED. Use awsauthhelper.Credentials.get_session_generator() instead.
 
-        :param bool internal: Wether or not this method was called from internal or external to the class
+        :return:
+        """
+        warnings.warn("Credentials.create_session() is deprecated in favour of Credentials.get_session_generator()", DeprecationWarning)
+        return self.get_session_generator(internal)
+
+    def get_session_generator(self, internal=False):
+        """
+        Return a callable which will generate a boto3 Session
+
+        :param bool internal: Whether or not this method was called from internal or external to the class
         :return callable(region):
         """
         session_credentials = {}
@@ -304,6 +353,32 @@ class Credentials(object):
 
         return build_session
 
+    def authenticate_mfa(self):
+        """
+        Use the provided mfa_serial, the existing credentials, and get an mfa session token
+
+        :return:
+        """
+
+        # Check we have an MFA token
+        mfa_token = self.mfa_token
+        if mfa_token is None:
+            mfa_token = raw_input('Enter MFA token: ')
+
+        # Assume the role
+        session = self.create_session(internal=True)
+        credentials = session().client('sts').get_session_token(
+            SerialNumber=self.mfa_serial,
+            DurationSeconds=self.mfa_session_life,
+            TokenCode=mfa_token
+        )
+
+        self.logger.debug('authenticate_mfa(): credentials={value}'.format(value=credentials))
+        self._is_mfa_authenticated = True
+
+        return self._switch_auth_scope(credentials)
+
+
     def _assume_role(self):
         """
         Assume the new role, and store the old credentials.
@@ -321,6 +396,9 @@ class Credentials(object):
         )
         self.logger.debug('_assume_role(): credentials={value}'.format(value=credentials))
 
+        return self._switch_auth_scope(credentials)
+
+    def _switch_auth_scope(self, credentials):
         self._orig_aws_access_key_id = self.aws_access_key_id
         self._orig_aws_secret_access_key = self.aws_secret_access_key
         self._orig_aws_session_token = self.aws_session_token
@@ -409,6 +487,14 @@ class Credentials(object):
             self.has_role() and
             (self.has_keys() or self.has_profile())
         )
+
+    def has_mfa(self):
+        """
+        Have we been provided an mfa_serial to use?
+
+        :return bool:
+        """
+        return self.mfa_serial is not None
 
     def use_as_global(self):
         """
