@@ -1,3 +1,6 @@
+"""
+AWS Auth Argument Parser and Session helper
+"""
 import argparse
 import logging
 import os
@@ -13,7 +16,7 @@ __author__ = 'Drew J. Sonne <drew.sonne@gmail.com>'
 class AWSArgumentParser(argparse.ArgumentParser):
     """
     Helper Class containing a preset set of cli arguments for parsing into the Credentials object.
-    If not explicity set, arguments are read from the environment variables.
+    If not explicitly set, arguments are read from the environment variables.
     """
 
     def __init__(self, role_session_name, region=None, profile=None,
@@ -50,8 +53,7 @@ class AWSArgumentParser(argparse.ArgumentParser):
                 required=(auth_uses_keys or auth_uses_keys_with_session)
             )
 
-        if (not enforce_auth) or (
-            auth_uses_keys or auth_uses_keys_with_session):
+        if (not enforce_auth) or (auth_uses_keys or auth_uses_keys_with_session):
             aws_group.add_argument(
                 '--aws-secret-access-key',
                 help=('Access and secret key variables override credentials '
@@ -136,19 +138,19 @@ class EnvDefault(argparse.Action):
     Allow argparse values to be pulled from environment variables
     """
 
-    def __init__(self, envvar, required=True, default=None, **kwargs):
-        if not default and envvar:
-            if envvar in os.environ:
+    def __init__(self, variable_name, required=True, default=None, **kwargs):
+        if not default and variable_name:
+            if variable_name in os.environ:
                 logging.debug(
-                    'EnvDefault:__init__(): os.environ["{envvar}"]={value}'.format(
-                        value=os.environ[envvar],
-                        envvar=envvar
+                    'EnvDefault:__init__(): os.environ["{environment_variable}"]={value}'.format(
+                        value=os.environ[variable_name],
+                        environment_variable=variable_name
                     ))
-                default = os.environ[envvar]
+                default = os.environ[variable_name]
             else:
                 logging.debug(
-                    'EnvDefault:__init__(): "{envvar}" not in os.environ'.format(
-                        envvar=envvar))
+                    'EnvDefault:__init__(): "{environment_variable}" not in os.environ'.format(
+                        environment_variable=variable_name))
         if required and default:
             required = False
         super(EnvDefault, self).__init__(default=default, required=required,
@@ -173,12 +175,9 @@ class Credentials(object):
     ]
     default = None
 
-    def __init__(self, region=None, aws_secret_access_key=None,
-                 aws_access_key_id=None, aws_session_token=None,
-                 profile=None, role=None, role_session_name=None,
-                 config_path=None, credentials_path=None,
-                 mfa_serial=None, mfa_session_life=900, mfa_token=None,
-                 force_mfa=False, auth_debug=False, **kwargs):
+    def __init__(self, region=None, aws_secret_access_key=None, aws_access_key_id=None, aws_session_token=None,
+                 profile=None, role=None, role_session_name=None, config_path=None, credentials_path=None,
+                 mfa_serial=None, mfa_session_life=900, mfa_token=None, force_mfa=False, auth_debug=False, **kwargs):
         """
         Handle the assumption of roles, and creation of Session objects.
 
@@ -213,67 +212,51 @@ class Credentials(object):
 
         self.aws_secret_access_key = aws_secret_access_key
         self.logger.debug(
-            '__init__(): self.aws_secret_access_key={value}'.format(
-                value=aws_secret_access_key))
+            '__init__(): self.aws_secret_access_key={value}'.format(value=aws_secret_access_key))
 
         self.aws_access_key_id = aws_access_key_id
-        self.logger.debug('__init__(): self.aws_access_key_id={value}'.format(
-            value=aws_access_key_id))
+        self.logger.debug('__init__(): self.aws_access_key_id={value}'.format(value=aws_access_key_id))
 
         self.aws_session_token = aws_session_token
-        self.logger.debug('__init__(): self.aws_session_token={value}'.format(
-            value=aws_secret_access_key))
+        self.logger.debug('__init__(): self.aws_session_token={value}'.format(value=aws_secret_access_key))
 
         self.profile = profile
-        self.logger.debug(
-            '__init__(): self.profile={value}'.format(value=profile))
+        self.logger.debug('__init__(): self.profile={value}'.format(value=profile))
 
         self.role = role
         self.logger.debug('__init__(): self.role={value}'.format(value=role))
 
         self.role_session_name = role_session_name
-        self.logger.debug('__init__(): self.role_session_name={value}'.format(
-            value=role_session_name))
+        self.logger.debug('__init__(): self.role_session_name={value}'.format(value=role_session_name))
 
         self.mfa_serial = mfa_serial
-        self.logger.debug(
-            '__init__(): self.mfa_serial={value}'.format(value=mfa_serial))
+        self.logger.debug('__init__(): self.mfa_serial={value}'.format(value=mfa_serial))
         self.mfa_session_life = mfa_session_life
-        self.logger.debug('__init__(): self.mfa_session_life={value}'.format(
-            value=mfa_session_life))
+        self.logger.debug('__init__(): self.mfa_session_life={value}'.format(value=mfa_session_life))
         self.mfa_token = mfa_token
-        self.logger.debug(
-            '__init__(): self.mfa_token={value}'.format(value=mfa_token))
+        self.logger.debug('__init__(): self.mfa_token={value}'.format(value=mfa_token))
         self._is_mfa_authenticated = False
 
         self.credentials_path = credentials_path
-        self.logger.debug('__init__(): self.credentials_path={value}'.format(
-            value=credentials_path))
+        self.logger.debug('__init__(): self.credentials_path={value}'.format(value=credentials_path))
         # Tell boto that we have a custom credentials location
         if self.credentials_path is not None:
-            self.logger.debug(
-                '__init__(): os.environ[\'AWS_SHARED_CREDENTIALS_FILE\'] = {value}'.format(
-                    value=self.credentials_path
-                ))
+            self.logger.debug('__init__(): os.environ[\'AWS_SHARED_CREDENTIALS_FILE\'] = {value}'.format(
+                value=self.credentials_path))
             os.environ['AWS_SHARED_CREDENTIALS_FILE'] = self.credentials_path
 
         self.config_path = config_path
-        self.logger.debug(
-            '__init__(): self.config_path={value}'.format(value=config_path))
+        self.logger.debug('__init__(): self.config_path={value}'.format(value=config_path))
         # Tell boto that we have a custom config location
         if self.config_path is not None:
-            self.logger.debug(
-                '__init__(): os.environ[\'AWS_CONFIG_FILE\'] = {value}'.format(
-                    value=self.config_path
-                ))
+            self.logger.debug('__init__(): os.environ[\'AWS_CONFIG_FILE\'] = {value}'.format(value=self.config_path))
             os.environ['AWS_CONFIG_FILE'] = self.config_path
 
-        # Vars to store original creds, incase we assume a role
+        # Vars to store original credentials, in case we assume a role
         self._freeze = {}
 
         self.force_mfa = force_mfa
-        self.logger.debug(
-            '__init__(): self.force_mfa={value}'.format(value=force_mfa))
+        self.logger.debug('__init__(): self.force_mfa={value}'.format(value=force_mfa))
 
         if Credentials.default is None:
             Credentials.default = self
@@ -300,9 +283,7 @@ class Credentials(object):
         :return awsauthhelper.Credentials: Allow chaining.
         """
         generate_session = self.get_session_generator(internal=True)
-        response = generate_session().client('sts').get_session_token(
-            DurationSeconds=self.mfa_session_life
-        )
+        response = generate_session().client('sts').get_session_token(DurationSeconds=self.mfa_session_life)
         self._switch_auth_scope(response)
 
         return self
@@ -315,8 +296,7 @@ class Credentials(object):
         """
         for property_key in self.freeze_properties:
             self._freeze[property_key] = getattr(self, property_key, None)
-        self.logger.debug(
-            'freeze(): self._freeze={value}'.format(value=self._freeze))
+        self.logger.debug('freeze(): self._freeze={value}'.format(value=self._freeze))
 
         return self
 
@@ -326,12 +306,10 @@ class Credentials(object):
 
         :return awsauthhelper.Credentials:
         """
-        self.logger.debug(
-            'reset(): before self={value}'.format(value=vars(self)))
+        self.logger.debug('reset(): before self={value}'.format(value=vars(self)))
         for property_key in self.freeze_properties:
             setattr(self, property_key, self._freeze[property_key])
-        self.logger.debug(
-            'reset(): after self={value}'.format(value=self._freeze))
+        self.logger.debug('reset(): after self={value}'.format(value=self._freeze))
 
         return self
 
@@ -341,9 +319,8 @@ class Credentials(object):
 
         :return:
         """
-        warnings.warn(
-            "Credentials.create_session() is deprecated in favour of Credentials.get_session_generator()",
-            DeprecationWarning)
+        warnings.warn("Credentials.create_session() is deprecated in favour of Credentials.get_session_generator()",
+                      DeprecationWarning)
         return self.get_session_generator(internal)
 
     def get_session_generator(self, internal=False):
@@ -354,36 +331,24 @@ class Credentials(object):
         :return callable(region):
         """
         session_credentials = {}
-        self.logger.debug(
-            'create_session(): session_credentials={value}'.format(
-                value=session_credentials))
+        self.logger.debug('create_session(): session_credentials={value}'.format(value=session_credentials))
         # Get the credentials which can assume the role
         if self.has_keys():
             self.logger.debug('create_session(): self.has_keys()=True')
             session_credentials['aws_access_key_id'] = self.aws_access_key_id
-            session_credentials[
-                'aws_secret_access_key'] = self.aws_secret_access_key
-            self.logger.debug(
-                'create_session(): session_credentials={value}'.format(
-                    value=session_credentials))
+            session_credentials['aws_secret_access_key'] = self.aws_secret_access_key
+            self.logger.debug('create_session(): session_credentials={value}'.format(value=session_credentials))
             if self.has_session_keys():
-                self.logger.debug(
-                    'create_session(): self.has_session_keys()=True')
-                session_credentials[
-                    'aws_session_token'] = self.aws_session_token
-                self.logger.debug(
-                    'create_session(): session_credentials={value}'.format(
-                        value=session_credentials))
+                self.logger.debug('create_session(): self.has_session_keys()=True')
+                session_credentials['aws_session_token'] = self.aws_session_token
+                self.logger.debug('create_session(): session_credentials={value}'.format(value=session_credentials))
         elif self.has_profile():
             self.logger.debug('create_session(): self.has_profile()=True')
             session_credentials['profile_name'] = self.profile
-            self.logger.debug(
-                'create_session(): session_credentials={value}'.format(
-                    value=session_credentials))
+            self.logger.debug('create_session(): session_credentials={value}'.format(value=session_credentials))
 
         default_region = self.region
-        self.logger.debug('create_session(): default_region={value}'.format(
-            value=self.region))
+        self.logger.debug('create_session(): default_region={value}'.format(value=self.region))
 
         exit_at_session = self.auth_debug & (not internal)
 
@@ -395,8 +360,7 @@ class Credentials(object):
             :return boto3.session.Session:
             """
             session_credentials['region_name'] = region
-            self.logger.debug(
-                'build_session(): region={value}'.format(value=self.region))
+            self.logger.debug('build_session(): region={value}'.format(value=self.region))
 
             # When debugging, end our auth process when our session is created.
             if exit_at_session:
@@ -426,8 +390,7 @@ class Credentials(object):
             TokenCode=mfa_token
         )
 
-        self.logger.debug('authenticate_mfa(): credentials={value}'.format(
-            value=credentials))
+        self.logger.debug('authenticate_mfa(): credentials={value}'.format(value=credentials))
         self._is_mfa_authenticated = True
 
         return self._switch_auth_scope(credentials)
@@ -447,31 +410,26 @@ class Credentials(object):
             RoleArn=self.role,
             RoleSessionName=self.role_session_name
         )
-        self.logger.debug(
-            '_assume_role(): credentials={value}'.format(value=credentials))
+        self.logger.debug('_assume_role(): credentials={value}'.format(value=credentials))
 
         return self._switch_auth_scope(credentials)
 
-    def _switch_auth_scope(self, credentials):
+    def _switch_auth_scope(self, credential_payload):
         self._orig_aws_access_key_id = self.aws_access_key_id
         self._orig_aws_secret_access_key = self.aws_secret_access_key
         self._orig_aws_session_token = self.aws_session_token
 
-        self.aws_access_key_id = credentials['Credentials']['AccessKeyId']
-        self.logger.debug(
-            '_assume_role(): self.aws_access_key_id={value}'.format(
-                value=credentials['Credentials']['AccessKeyId']))
+        credentials = credential_payload['Credentials']
 
-        self.aws_secret_access_key = credentials['Credentials'][
-            'SecretAccessKey']
-        self.logger.debug(
-            '_assume_role(): self.aws_secret_access_key={value}'.format(
-                value=credentials['Credentials']['SecretAccessKey']))
+        self.aws_access_key_id = credentials['AccessKeyId']
+        self.logger.debug('_assume_role(): self.aws_access_key_id={value}'.format(value=credentials['AccessKeyId']))
 
-        self.aws_session_token = credentials['Credentials']['SessionToken']
+        self.aws_secret_access_key = credentials['SecretAccessKey']
         self.logger.debug(
-            '_assume_role(): self.aws_session_token={value}'.format(
-                value=credentials['Credentials']['SessionToken']))
+            '_assume_role(): self.aws_secret_access_key={value}'.format(value=credentials['SecretAccessKey']))
+
+        self.aws_session_token = credentials['SessionToken']
+        self.logger.debug('_assume_role(): self.aws_session_token={value}'.format(value=credentials['SessionToken']))
 
         return self
 
@@ -506,8 +464,7 @@ class Credentials(object):
 
         :return bool:
         """
-        return (self.aws_access_key_id is not None) and \
-               (self.aws_secret_access_key is not None)
+        return (self.aws_access_key_id is not None) and (self.aws_secret_access_key is not None)
 
     def has_session_keys(self):
         """
@@ -539,10 +496,7 @@ class Credentials(object):
 
         :return bool:
         """
-        return (
-            self.has_role() and
-            (self.has_keys() or self.has_profile())
-        )
+        return (self.has_role() and (self.has_keys() or self.has_profile()))
 
     def has_mfa(self):
         """
