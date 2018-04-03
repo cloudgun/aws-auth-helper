@@ -57,7 +57,6 @@ Full documentation can be found at `aws-auth-helper.readthedocs.org`_.
     },
     install_requires=['boto3', 'future'],
     license='GPLv2',
-    test_suite='tests',
     author='Drew J. Sonne',
     author_email='drew.sonne@gmail.com',
     classifiers=[
@@ -73,5 +72,6 @@ Full documentation can be found at `aws-auth-helper.readthedocs.org`_.
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: System :: Systems Administration :: Authentication/Directory'
     ],
-    tests_require=['coverage', 'nose', 'nose-cover3', 'sphinx']
+    tests_require=['coverage', 'nose', 'nose-cover3', 'sphinx'],
+    test_suite='nose.collector',
 )
