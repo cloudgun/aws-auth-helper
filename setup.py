@@ -1,3 +1,6 @@
+"""
+Package Metadata
+"""
 from setuptools import find_packages, setup
 
 __version__ = '1.5.5'
@@ -35,15 +38,19 @@ Full documentation can be found at `aws-auth-helper.readthedocs.org`_.
    :target: https://travis-ci.org/drewsonne/awsauthhelper
 
 """,
-    description='Helper library providing ArgumentParser and Credentials class for AWS authentication',
+    description='Helper library providing ArgumentParser and Credentials '
+                'class for AWS authentication',
     version=__version__,
-    install_requires=['boto3'],
     packages=find_packages(),
     # tests_requires=['unittest2', 'mock'],
     url='http://aws-auth-helper.readthedocs.org/',
-    download_url='https://github.com/drewsonne/awsauthhelper/archive/v.{version}.tar.gz'.format(version=__version__),
+    download_url=(
+        'https://github.com/drewsonne/awsauthhelper/archive/v.' +
+        __version__ +
+        '.tar.gz'
+    ),
+    install_requires=['boto3', 'future'],
     license='GPLv2',
-    test_suite='tests',
     author='Drew J. Sonne',
     author_email='drew.sonne@gmail.com',
     classifiers=[
@@ -58,5 +65,8 @@ Full documentation can be found at `aws-auth-helper.readthedocs.org`_.
         'Topic :: Software Development :: Libraries',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: System :: Systems Administration :: Authentication/Directory'
-    ]
+    ],
+    setup_requires=['nose>=1.0'],
+    tests_require=['coverage', 'nose', 'nose-cover3', 'sphinx'],
+    test_suite='nose.collector',
 )

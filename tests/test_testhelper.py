@@ -12,17 +12,17 @@ class TestTestHelper(TestCase):
         """
         Make sure assertInAny fails correctly
 
-        :return: 
+        :return:
         """
         test_case = AuthHelperTestCase('assertAnyIn')
         with self.assertRaises(AssertionError):
             test_case.assertAnyIn(['1', '2', '3'], ['a', 'b', 'c', 'd'])
 
-    def test_assertAnyIn_suceeds(self):
+    def test_assertAnyIn_succeeds(self):
         """
         Make sure assertInAny succeeds
-        
-        :return: 
+
+        :return:
         """
         test_case = AuthHelperTestCase('assertAnyIn')
         self.assertIsNone(test_case.assertAnyIn(['1', '2', '3'], ['1', 'b', 'c', 'd']))
