@@ -71,6 +71,8 @@ class Credentials(object):
 
     def using_role(self) -> bool: ...
 
+    def has_mfa(self) -> bool: ...
+
 
 def validate_credentials(
     aws_access_key_id: str,

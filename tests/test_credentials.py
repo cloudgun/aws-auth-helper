@@ -5,85 +5,95 @@ from awsauthhelper import Credentials
 
 class TestCredentials(TestCase):
     def test_has_role(self):
-        creds = Credentials(role='my_role')
-        self.assertTrue(creds.has_role())
+        credentials = Credentials(role='my_role')
+        self.assertTrue(credentials.has_role())
 
     def test_has_profile(self):
-        creds = Credentials(profile='my_role')
-        self.assertTrue(creds.has_profile())
+        credentials = Credentials(profile='my_role')
+        self.assertTrue(credentials.has_profile())
 
     def test_has_keys(self):
-        creds = Credentials(aws_secret_access_key='my_key', aws_access_key_id='my_key')
-        self.assertTrue(creds.has_keys())
+        credentials = Credentials(aws_secret_access_key='my_key', aws_access_key_id='my_key')
+        self.assertTrue(credentials.has_keys())
 
     def test_has_session_keys(self):
-        creds = Credentials(aws_secret_access_key='my_key', aws_access_key_id='my_key', aws_session_token='my_session')
-        self.assertTrue(creds.has_session_keys())
+        credentials = Credentials(aws_secret_access_key='my_key', aws_access_key_id='my_key',
+                                  aws_session_token='my_session')
+        self.assertTrue(credentials.has_session_keys())
 
     def test_using_role(self):
-        creds = Credentials(role='my_role', profile='my_profile')
-        self.assertTrue(creds.using_role())
+        credentials = Credentials(role='my_role', profile='my_profile')
+        self.assertTrue(credentials.using_role())
 
-        creds = Credentials(role='my_role', aws_secret_access_key='my_key', aws_access_key_id='my_key')
-        self.assertTrue(creds.using_role())
+        credentials = Credentials(role='my_role', aws_secret_access_key='my_key', aws_access_key_id='my_key')
+        self.assertTrue(credentials.using_role())
 
     def test__build_kwargs(self):
-        creds = Credentials(aws_secret_access_key='my_key', aws_access_key_id='my_id')
-        self.assertDictEqual(creds._build_kwargs(), {
+        credentials = Credentials(aws_secret_access_key='my_key', aws_access_key_id='my_id')
+        self.assertDictEqual(credentials._build_kwargs(), {
             'aws_secret_access_key': 'my_key',
             'aws_access_key_id': 'my_id'
         })
 
-        creds = Credentials(aws_secret_access_key='my_key', aws_access_key_id='my_id', aws_session_token='my_token')
-        self.assertDictEqual(creds._build_kwargs(), {
+        credentials = Credentials(aws_secret_access_key='my_key', aws_access_key_id='my_id',
+                                  aws_session_token='my_token')
+        self.assertDictEqual(credentials._build_kwargs(), {
             'aws_secret_access_key': 'my_key',
             'aws_access_key_id': 'my_id',
             'aws_session_token': 'my_token'
         })
 
-        creds = Credentials(profile='my_profile')
-        self.assertDictEqual(creds._build_kwargs(), {
+        credentials = Credentials(profile='my_profile')
+        self.assertDictEqual(credentials._build_kwargs(), {
             'profile_name': 'my_profile'
         })
 
-        creds = Credentials(region='my_region')
-        self.assertDictEqual(creds._build_kwargs(), {
+        credentials = Credentials(region='my_region')
+        self.assertDictEqual(credentials._build_kwargs(), {
             'region_name': 'my_region'
         })
 
-        creds = Credentials(region='my_region', aws_secret_access_key='my_key', aws_access_key_id='my_id')
-        self.assertDictEqual(creds._build_kwargs(), {
+        credentials = Credentials(region='my_region', aws_secret_access_key='my_key', aws_access_key_id='my_id')
+        self.assertDictEqual(credentials._build_kwargs(), {
             'region_name': 'my_region',
             'aws_secret_access_key': 'my_key',
             'aws_access_key_id': 'my_id'
         })
 
     def test_freeze(self):
-        creds = Credentials(
+        credentials = Credentials(
             region='test_region',
             aws_secret_access_key='test_key',
             aws_access_key_id='test_id'
         )
 
-        self.assertEqual(creds.region, 'test_region')
-        self.assertEqual(creds.aws_secret_access_key, 'test_key')
-        self.assertEqual(creds.aws_access_key_id, 'test_id')
+        self.assertEqual(credentials.region, 'test_region')
+        self.assertEqual(credentials.aws_secret_access_key, 'test_key')
+        self.assertEqual(credentials.aws_access_key_id, 'test_id')
 
-        self.assertDictEqual(creds._freeze, {})
+        self.assertDictEqual(credentials._freeze, {})
 
-        creds.freeze()
-        creds.profile = 'my_test_profile'
-        creds.role = 'my_test_role'
+        credentials.freeze()
+        credentials.profile = 'my_test_profile'
+        credentials.role = 'my_test_role'
 
-        self.assertEqual(creds.profile, 'my_test_profile')
-        self.assertEqual(creds.role, 'my_test_role')
+        self.assertEqual(credentials.profile, 'my_test_profile')
+        self.assertEqual(credentials.role, 'my_test_role')
 
-        self.assertEqual(creds._freeze['region'], 'test_region')
-        self.assertEqual(creds._freeze['aws_secret_access_key'], 'test_key')
-        self.assertEqual(creds._freeze['aws_access_key_id'], 'test_id')
+        self.assertEqual(credentials._freeze['region'], 'test_region')
+        self.assertEqual(credentials._freeze['aws_secret_access_key'], 'test_key')
+        self.assertEqual(credentials._freeze['aws_access_key_id'], 'test_id')
 
-        creds.reset()
+        credentials.reset()
 
-        self.assertEqual(creds.region, 'test_region')
-        self.assertEqual(creds.aws_secret_access_key, 'test_key')
-        self.assertEqual(creds.aws_access_key_id, 'test_id')
+        self.assertEqual(credentials.region, 'test_region')
+        self.assertEqual(credentials.aws_secret_access_key, 'test_key')
+        self.assertEqual(credentials.aws_access_key_id, 'test_id')
+
+    def test_has_mfa(self):
+        credentials = Credentials()
+
+        self.assertFalse(credentials.has_mfa())
+
+        credentials.mfa_serial = "mock_serial"
+        self.assertTrue(credentials.has_mfa())
