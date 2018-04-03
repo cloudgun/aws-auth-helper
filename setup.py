@@ -1,3 +1,6 @@
+"""
+Package Metadata
+"""
 from setuptools import find_packages, setup
 
 __version__ = '1.5.5'
@@ -42,9 +45,9 @@ Full documentation can be found at `aws-auth-helper.readthedocs.org`_.
     # tests_requires=['unittest2', 'mock'],
     url='http://aws-auth-helper.readthedocs.org/',
     download_url=(
-            'https://github.com/drewsonne/awsauthhelper/archive/v.' +
-            __version__ +
-            '.tar.gz'
+        'https://github.com/drewsonne/awsauthhelper/archive/v.' +
+        __version__ +
+        '.tar.gz'
     ),
     entry_points={
         'console_scripts': [
