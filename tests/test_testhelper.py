@@ -18,7 +18,7 @@ class TestTestHelper(TestCase):
         with self.assertRaises(AssertionError):
             test_case.assertAnyIn(['1', '2', '3'], ['a', 'b', 'c', 'd'])
 
-    def test_assertAnyIn_suceeds(self):
+    def test_assertAnyIn_succeeds(self):
         """
         Make sure assertInAny succeeds
 
