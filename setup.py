@@ -55,7 +55,7 @@ Full documentation can be found at `aws-auth-helper.readthedocs.org`_.
             'aws-auth-helper=awsauthhelper.command_line:main'
         ]
     },
-    install_requires=['boto3'],
+    install_requires=['boto3','future'],
     license='GPLv2',
     test_suite='tests',
     author='Drew J. Sonne',
